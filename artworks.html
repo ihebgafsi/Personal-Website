@@ -1,383 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iheb Gafsi - Artworks & Paintings</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="alternate icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%231e40af;stop-opacity:1'/><stop offset='100%25' style='stop-color:%237c3aed;stop-opacity:1'/></linearGradient><linearGradient id='accent' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%2360a5fa;stop-opacity:1'/><stop offset='100%25' style='stop-color:%23a78bfa;stop-opacity:1'/></linearGradient></defs><rect width='32' height='32' rx='8' fill='url(%23bg)'/><circle cx='16' cy='16' r='3' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.8'/><ellipse cx='16' cy='16' rx='8' ry='4' fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.6'/><ellipse cx='16' cy='16' rx='8' ry='4' fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.6' transform='rotate(60 16 16)'/><ellipse cx='16' cy='16' rx='8' ry='4' fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.6' transform='rotate(120 16 16)'/><circle cx='16' cy='16' r='2' fill='%23ffffff'/><circle cx='24' cy='16' r='1.5' fill='url(%23accent)'/><circle cx='8' cy='16' r='1.5' fill='url(%23accent)'/><circle cx='20' cy='9' r='1.5' fill='url(%23accent)'/><circle cx='12' cy='23' r='1.5' fill='url(%23accent)'/><text x='16' y='19' font-family='Inter, sans-serif' font-size='6' font-weight='bold' fill='%231e40af' text-anchor='middle'>I</text></svg>">
-    
-    <!-- Meta tags for better SEO and social sharing -->
-    <meta name="description" content="Explore Iheb Gafsi's artistic journey through paintings and visual artworks. A collection of creative expressions that complement his work in computational physics and machine learning.">
-    <meta name="keywords" content="Art, Paintings, Visual Art, Creative Expression, Iheb Gafsi, Artist">
-    <meta name="author" content="Iheb Gafsi">
-    
-    <!-- Open Graph meta tags for social media -->
-    <meta property="og:title" content="Iheb Gafsi - Artworks & Paintings">
-    <meta property="og:description" content="Explore Iheb Gafsi's artistic journey through paintings and visual artworks.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://ihebgafsi.dev/artworks">
-    
-    <!-- Twitter Card meta tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Iheb Gafsi - Artworks & Paintings">
-    <meta name="twitter:description" content="Explore Iheb Gafsi's artistic journey through paintings and visual artworks.">
-    
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iheb Gafsi</title>
+<meta name="description" content="Iheb Gafsi — Tunis, Tunisia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">Iheb Gafsi</a>
-            <div class="nav-menu" id="nav-menu">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="index.html#about" class="nav-link">About</a>
-                <a href="index.html#research" class="nav-link">Research</a>
-                <a href="index.html#experience" class="nav-link">Experience</a>
-                <a href="index.html#volunteering" class="nav-link">Leadership</a>
-                <a href="index.html#education" class="nav-link">Education</a>
-                <a href="index.html#projects" class="nav-link">Projects</a>
-                <a href="index.html#publications" class="nav-link">Publications</a>
-                <a href="artworks.html" class="nav-link active">Artworks</a>
-                <a href="index.html#contact" class="nav-link">Contact</a>
-            </div>
-            <div class="hamburger" id="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">Artworks & Paintings</h1>
-                <p class="hero-subtitle">Visual Expressions of Creativity</p>
-                <p class="hero-description">
-                    Beyond my work in computational physics and machine learning, I find inspiration in visual arts. 
-                    My paintings explore the intersection of science and creativity, blending abstract concepts with 
-                    tangible expressions of imagination and emotion.
-                </p>
-                <div class="hero-buttons">
-                    <a href="#gallery" class="btn btn-primary">View Gallery</a>
-                    <a href="index.html" class="btn btn-secondary">Back to Portfolio</a>
-                </div>
-            </div>
-            <div class="hero-media">
-                <div class="artwork-preview">
-                    <i class="fas fa-palette"></i>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="page">
 
-    <!-- About Art Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <h2 class="section-title">About My Art</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p class="about-description">
-                        My artistic journey began as a complementary exploration to my scientific work. 
-                        Through painting, I find a different kind of problem-solving and expression that 
-                        enriches my understanding of complex systems and patterns.
-                    </p>
-                    <p class="about-description">
-                        Each piece represents a moment of creative exploration, often inspired by the 
-                        mathematical beauty I encounter in my research. The interplay of colors, shapes, 
-                        and textures mirrors the intricate relationships I study in neural networks and 
-                        physical systems.
-                    </p>
-                    <div class="art-stats">
-                        <div class="stat">
-                            <span class="stat-number">25+</span>
-                            <span class="stat-label">Paintings</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">5</span>
-                            <span class="stat-label">Exhibitions</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">3</span>
-                            <span class="stat-label">Years</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="art-techniques">
-                    <div class="technique-category">
-                        <h3>Mediums</h3>
-                        <div class="techniques">
-                            <span class="technique-tag">Acrylic</span>
-                            <span class="technique-tag">Oil</span>
-                            <span class="technique-tag">Watercolor</span>
-                            <span class="technique-tag">Digital</span>
-                            <span class="technique-tag">Mixed Media</span>
-                        </div>
-                    </div>
-                    <div class="technique-category">
-                        <h3>Styles</h3>
-                        <div class="techniques">
-                            <span class="technique-tag">Abstract</span>
-                            <span class="technique-tag">Contemporary</span>
-                            <span class="technique-tag">Geometric</span>
-                            <span class="technique-tag">Expressionist</span>
-                            <span class="technique-tag">Minimalist</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <header class="masthead">
+    <h1>Iheb Gafsi</h1>
+    <p class="meta">
+      Tunis, Tunisia
+      <span class="sep">·</span>
+      <a href="mailto:iheb.gafsi@insat.ucar.tn">iheb.gafsi@insat.ucar.tn</a>
+      <span class="sep">·</span>
+      <a href="https://github.com/ihebgafsi">github.com/ihebgafsi</a>
+      <span class="sep">·</span>
+      <a href="https://linkedin.com/in/ihebgafsi">linkedin</a>
+    </p>
+  </header>
 
-    <!-- Gallery Section -->
-    <section class="gallery" id="gallery">
-        <div class="container">
-            <h2 class="section-title">Gallery</h2>
-            <div class="gallery-filters">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="abstract">Abstract</button>
-                <button class="filter-btn" data-filter="geometric">Geometric</button>
-                <button class="filter-btn" data-filter="nature">Nature</button>
-                <button class="filter-btn" data-filter="digital">Digital</button>
-            </div>
-            <div class="gallery-grid">
-                <!-- Placeholder artwork items - these would be replaced with actual artwork images -->
-                <div class="artwork-item" data-category="abstract">
-                    <div class="artwork-image">
-                        <div class="placeholder-artwork abstract-1">
-                            <i class="fas fa-paint-brush"></i>
-                        </div>
-                        <div class="artwork-overlay">
-                            <h3>Neural Networks</h3>
-                            <p>Acrylic on Canvas, 2024</p>
-                            <button class="view-btn">View Details</button>
-                        </div>
-                    </div>
-                </div>
+  <section class="about">
+    <p>
+      I study computer networks and telecommunications at INSAT, in Tunis, with a focus on
+      computer vision, applied mathematics, and machine learning. Most of what I work on ends up
+      being about representing structured data — rotations, graphs, geometry — in ways that
+      don't quietly break the assumptions of the models built on top of them. I'm looking for a
+      master's thesis project starting in 2027.
+    </p>
+  </section>
 
-                <div class="artwork-item" data-category="geometric">
-                    <div class="artwork-image">
-                        <div class="placeholder-artwork geometric-1">
-                            <i class="fas fa-shapes"></i>
-                        </div>
-                        <div class="artwork-overlay">
-                            <h3>Mathematical Beauty</h3>
-                            <p>Oil on Canvas, 2024</p>
-                            <button class="view-btn">View Details</button>
-                        </div>
-                    </div>
-                </div>
+  <section>
+    <h2>Experience</h2>
 
-                <div class="artwork-item" data-category="nature">
-                    <div class="artwork-image">
-                        <div class="placeholder-artwork nature-1">
-                            <i class="fas fa-leaf"></i>
-                        </div>
-                        <div class="artwork-overlay">
-                            <h3>Quantum Garden</h3>
-                            <p>Watercolor, 2023</p>
-                            <button class="view-btn">View Details</button>
-                        </div>
-                    </div>
-                </div>
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Interhuman AI</h3>
+        <span class="date">Jul 2026 — present</span>
+      </div>
+      <p class="role">Applied research intern (part-time), Copenhagen, remote</p>
+      <p>
+        Working on Inter-X, a multimodal model for recognizing human behavior from video, text,
+        and audio. I represent pose orientation as an element of SO(3)/SE(3) rather than as a
+        flattened vector, which avoids the averaging and distortion errors that come from
+        treating rotations as ordinary coordinates. It measurably improved classification
+        accuracy on two internal benchmarks.
+      </p>
+    </article>
 
-                <div class="artwork-item" data-category="digital">
-                    <div class="artwork-image">
-                        <div class="placeholder-artwork digital-1">
-                            <i class="fas fa-laptop-code"></i>
-                        </div>
-                        <div class="artwork-overlay">
-                            <h3>Algorithmic Dreams</h3>
-                            <p>Digital Art, 2024</p>
-                            <button class="view-btn">View Details</button>
-                        </div>
-                    </div>
-                </div>
+    <article class="entry">
+      <div class="entry-head">
+        <h3>INSAT — final-year project</h3>
+        <span class="date">Jan — Jul 2026</span>
+      </div>
+      <p class="role">Multimodal cattle behavior recognition (MMCows), Tunis</p>
+      <p>
+        Built a pipeline that combines video and sensor data to classify livestock behavior.
+        The project led to a separate piece of work on reconstructing 3D shapes from multiple
+        2D views, submitted to ACIVS 2026 and currently under review. A second paper is in
+        preparation.
+      </p>
+    </article>
 
-                <div class="artwork-item" data-category="abstract">
-                    <div class="artwork-image">
-                        <div class="placeholder-artwork abstract-2">
-                            <i class="fas fa-atom"></i>
-                        </div>
-                        <div class="artwork-overlay">
-                            <h3>Particle Dance</h3>
-                            <p>Mixed Media, 2024</p>
-                            <button class="view-btn">View Details</button>
-                        </div>
-                    </div>
-                </div>
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Wise Vision AI Technologies</h3>
+        <span class="date">Nov 2024 — Feb 2025</span>
+      </div>
+      <p class="role">Undergraduate research student (part-time), Tunis</p>
+      <p>
+        Ported a small multimodal training pipeline from PyTorch to JAX, running on TPU. Also
+        worked on attention-based methods for tracking multiple people across camera views when
+        they're partially occluded from each other.
+      </p>
+    </article>
 
-                <div class="artwork-item" data-category="geometric">
-                    <div class="artwork-image">
-                        <div class="placeholder-artwork geometric-2">
-                            <i class="fas fa-cube"></i>
-                        </div>
-                        <div class="artwork-overlay">
-                            <h3>Fractal Universe</h3>
-                            <p>Acrylic on Canvas, 2023</p>
-                            <button class="view-btn">View Details</button>
-                        </div>
-                    </div>
-                </div>
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Callem AI</h3>
+        <span class="date">Jun — Oct 2024</span>
+      </div>
+      <p class="role">R&amp;D machine learning intern, Paris &amp; Tunis</p>
+      <p>
+        Worked on inference efficiency for LLaMA-7B (KV-cache eviction under a fixed memory
+        budget), on RLHF fine-tuning of a smaller model, and on a multi-agent system for
+        planning.
+      </p>
+    </article>
 
-                <div class="artwork-item" data-category="nature">
-                    <div class="artwork-image">
-                        <div class="placeholder-artwork nature-2">
-                            <i class="fas fa-mountain"></i>
-                        </div>
-                        <div class="artwork-overlay">
-                            <h3>Mountain Meditation</h3>
-                            <p>Oil on Canvas, 2023</p>
-                            <button class="view-btn">View Details</button>
-                        </div>
-                    </div>
-                </div>
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Silver Brain AI AG</h3>
+        <span class="date">Dec 2023 — May 2024</span>
+      </div>
+      <p class="role">R&amp;D AI intern (part-time), Zurich, remote</p>
+      <p>
+        Worked on synthetic data generation, fine-tuned Mistral-7B on chemistry-related
+        reasoning tasks with QLoRA and DPO, and implemented sparse mixture-of-experts routing.
+      </p>
+    </article>
+  </section>
 
-                <div class="artwork-item" data-category="digital">
-                    <div class="artwork-image">
-                        <div class="placeholder-artwork digital-2">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <div class="artwork-overlay">
-                            <h3>Consciousness</h3>
-                            <p>Digital Art, 2024</p>
-                            <button class="view-btn">View Details</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <section>
+    <h2>Writing</h2>
+    <ul class="papers">
+      <li>
+        Gafsi, I. et al. — <em>Canonical Geometric Archetypes for Multi-View 3D Cuboid
+        Reconstruction from 2D Bounding Boxes of Planar Motion Objects.</em>
+        Submitted to ACIVS 2026, under review.
+      </li>
+      <li>
+        Gafsi, I. — manuscript in preparation, generalizing the above beyond livestock tracking.
+      </li>
+      <li>
+        Gafsi, I., Ben Ammar, A., Labba, F. (2024) — <em>RAYGo: Retrieve As You Go for
+        Large-Scale Asynchronous Action Planning.</em>
+        <a href="https://doi.org/10.5281/zenodo.14253984">Zenodo preprint</a>.
+      </li>
+      <li>
+        Gafsi, I. (2024) — <em>NORA: Neuro-Evolution of Low-Rank Adaptation of Language
+        Models.</em> EasyChair preprint.
+      </li>
+    </ul>
+  </section>
 
-    <!-- Process Section -->
-    <section class="process">
-        <div class="container">
-            <h2 class="section-title">Creative Process</h2>
-            <div class="process-grid">
-                <div class="process-step">
-                    <div class="step-icon">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <h3>Inspiration</h3>
-                    <p>Ideas often emerge from my scientific research, mathematical concepts, or moments of reflection during walks in nature.</p>
-                </div>
-                <div class="process-step">
-                    <div class="step-icon">
-                        <i class="fas fa-pencil-ruler"></i>
-                    </div>
-                    <h3>Sketching</h3>
-                    <p>I begin with rough sketches, exploring composition and color relationships before committing to the final piece.</p>
-                </div>
-                <div class="process-step">
-                    <div class="step-icon">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <h3>Creation</h3>
-                    <p>The painting process is intuitive yet deliberate, allowing the medium to guide the expression while maintaining artistic vision.</p>
-                </div>
-                <div class="process-step">
-                    <div class="step-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <h3>Reflection</h3>
-                    <p>Each completed work undergoes careful review, often revealing new insights about the original concept or inspiration.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  <section>
+    <h2>Some code</h2>
+    <ul class="papers">
+      <li>
+        <strong>BMA</strong> — query-conditioned value gating for transformer attention, an
+        attempt at the fixed-capacity bottleneck in standard gated attention, built in PyTorch
+        and JAX.
+      </li>
+      <li>
+        <strong>Graphton</strong> — a small GNN toolbox with Triton-accelerated sparse kernels,
+        for graphs too large for dense adjacency operations.
+      </li>
+    </ul>
+  </section>
 
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="container">
-            <h2 class="section-title">Interested in My Art?</h2>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h3>Let's Connect</h3>
-                    <p>If you're interested in purchasing artwork, commissioning a piece, or simply want to discuss art and creativity, I'd love to hear from you.</p>
-                    
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Tunisia</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <span>+216 99094980</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>iheb.gafsi@insat.ucar.tn</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fab fa-linkedin"></i>
-                            <span>Available on LinkedIn</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <section>
+    <h2>Education</h2>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p>&copy; 2024 Iheb Gafsi. All rights reserved.</p>
-                <div class="footer-links">
-                    <a href="index.html">Home</a>
-                    <a href="index.html#about">About</a>
-                    <a href="index.html#projects">Projects</a>
-                    <a href="index.html#publications">Publications</a>
-                    <a href="artworks.html">Artworks</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <article class="entry">
+      <div class="entry-head">
+        <h3>INSAT — Engineer's degree</h3>
+        <span class="date">2023 — 2027</span>
+      </div>
+      <p class="role">Computer Networks &amp; Telecommunications, Tunis. Specializing in machine learning and computer vision.</p>
+    </article>
 
-    <script src="script.js"></script>
-    <script>
-        // Gallery filter functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const artworkItems = document.querySelectorAll('.artwork-item');
+    <article class="entry">
+      <div class="entry-head">
+        <h3>INSAT — Classes préparatoires</h3>
+        <span class="date">2022 — 2023</span>
+      </div>
+      <p class="role">Intensive mathematics and physics track, Tunis.</p>
+    </article>
 
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Remove active class from all buttons
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    // Add active class to clicked button
-                    btn.classList.add('active');
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Lycée de Jemmel — Baccalauréat</h3>
+        <span class="date">2021 — 2022</span>
+      </div>
+      <p class="role">Computer science track, Monastir.</p>
+    </article>
+  </section>
 
-                    const filter = btn.getAttribute('data-filter');
+  <footer>
+    <p>
+      <a href="mailto:iheb.gafsi@insat.ucar.tn">iheb.gafsi@insat.ucar.tn</a>
+      <span class="sep">·</span>
+      <a href="https://github.com/ihebgafsi">github</a>
+      <span class="sep">·</span>
+      <a href="https://linkedin.com/in/ihebgafsi">linkedin</a>
+    </p>
+  </footer>
 
-                    artworkItems.forEach(item => {
-                        if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                            item.style.display = 'block';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-                });
-            });
+</div>
 
-            // View details functionality
-            const viewBtns = document.querySelectorAll('.view-btn');
-            viewBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    // This would open a modal or navigate to a detailed view
-                    alert('Artwork details would be displayed here. This is a placeholder for the full gallery functionality.');
-                });
-            });
-        });
-    </script>
 </body>
 </html>
