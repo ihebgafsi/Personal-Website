@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research · Iheb Gafsi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <aside class="sidebar">
+    <img class="avatar" src="images/profile.svg" alt="Photo of Iheb Gafsi">
+    <p class="name">Iheb Gafsi</p>
+    <p class="role">student, Tunis</p>
+
+    <nav class="primary">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a class="current" href="research.html">Research</a></li>
+        <li><a href="publications.html">Publications</a></li>
+        <li><a href="background.html">Background</a></li>
+      </ul>
+    </nav>
+
+    <div class="meta-block">
+      <dl>
+        <dt>location</dt><dd>Tunis, Tunisia</dd>
+        <dt>email</dt><dd><a href="mailto:iheb.gafsi@insat.ucar.tn">iheb.gafsi@insat.ucar.tn</a></dd>
+        <dt>github</dt><dd><a href="https://github.com/ihebgafsi">ihebgafsi</a></dd>
+        <dt>linkedin</dt><dd><a href="https://linkedin.com/in/ihebgafsi">ihebgafsi</a></dd>
+      </dl>
+    </div>
+  </aside>
+
+  <main>
+    <p class="eyebrow">research</p>
+    <h1 class="page-title">Research and projects</h1>
+    <p class="dim">Projects and open source code, in reverse chronological order.</p>
+
+    <div class="project">
+      <p class="project-tag">ongoing, at Interhuman AI</p>
+      <h2 class="project-title">Representing orientation on its own manifold</h2>
+      <div class="project-figure">
+        <img src="images/placeholder.svg" alt="Figure placeholder, replace with a diagram of the fusion method">
+      </div>
+      <p>When a system combines signals from more than one source, a common shortcut is to flatten everything into a vector and concatenate. This works poorly for quantities like head or body orientation, which live on a rotation group rather than a flat space. Averaging two rotations directly, or treating the difference between them as Euclidean, does not correspond to anything meaningful on the underlying manifold.</p>
+      <p>The approach keeps this kind of feature in its natural representation, elements of SO(3) or SE(3), through the combination step, rather than projecting it into a flat vector first. Combination is instead defined using operations that respect the geometry, so that a merged estimate stays a valid rotation rather than an average of two matrices that no longer is one. The setting is multimodal behavior recognition, where pose and orientation from video are combined with signal from audio.</p>
+    </div>
+
+    <div class="project">
+      <p class="project-tag">undergraduate project, submitted preprint</p>
+      <h2 class="project-title">Cuboid reconstruction from multiple views</h2>
+      <div class="project-figure">
+        <img src="images/placeholder.svg" alt="Figure placeholder, replace with a diagram of the reconstruction method">
+      </div>
+      <p>Given 2D bounding boxes of the same object seen from several cameras, and the assumption that the object moves on a plane rather than through arbitrary 3D motion, it is possible to recover a consistent 3D cuboid without full 3D annotation or depth sensors. The planar motion assumption removes enough degrees of freedom that the reconstruction becomes solvable from bounding boxes alone, given known camera geometry across views.</p>
+      <p>The method defines a small set of canonical geometric archetypes for how a box can project under this constraint, and fits the observed 2D boxes against them across views to recover a single consistent cuboid. It started as part of a livestock monitoring project, tracking cattle from multiple fixed cameras, and the write-up generalizes the representation to other planar motion tracking settings. Preprint details are on the <a href="publications.html">publications</a> page.</p>
+    </div>
+
+    <div class="project">
+      <p class="project-tag">preprint, 2024</p>
+      <h2 class="project-title">RAYGo, retrieval for asynchronous action planning</h2>
+      <div class="project-figure">
+        <img src="images/placeholder.svg" alt="Figure placeholder, replace with a diagram of the retrieval and planning loop">
+      </div>
+      <p>An agent planning over a long horizon, where actions do not resolve immediately and outcomes arrive asynchronously, cannot condition purely on its current state the way a short horizon planner can. Much of the relevant information is in what happened earlier in the episode, and in similar situations from other episodes.</p>
+      <p>RAYGo retrieves past action traces relevant to the current context and uses them to condition the next action, rather than planning from the current state alone. It is framed for large scale settings where the space of possible action sequences is too large to search directly, so retrieval stands in for search.</p>
+    </div>
+
+    <div class="project">
+      <p class="project-tag">preprint, 2024</p>
+      <h2 class="project-title">NORA, evolving low rank adaptation</h2>
+      <div class="project-figure">
+        <img src="images/placeholder.svg" alt="Figure placeholder, replace with a diagram of per layer rank search">
+      </div>
+      <p>Low rank adaptation fine tunes a language model by learning a small update to each weight matrix, constrained to a fixed rank chosen ahead of time and usually applied uniformly across layers. That choice is typically manual, and there is no strong reason every layer should need the same rank.</p>
+      <p>NORA uses neuro-evolution to search over rank configurations per layer instead of fixing one value globally, treating the rank assignment itself as something to be optimized rather than set by hand before training starts.</p>
+    </div>
+
+    <div class="project">
+      <p class="project-tag">open source, PyTorch and JAX</p>
+      <h2 class="project-title">BMA, query conditioned gating for attention</h2>
+      <div class="project-figure">
+        <img src="images/placeholder.svg" alt="Figure placeholder, replace with a diagram of the gating mechanism">
+      </div>
+      <p>Gated attention, as used in recent transformer variants, applies a gate to the attention output that is learned but fixed with respect to the query, the same gate value regardless of what is being asked for. That is a capacity bottleneck when different queries would benefit from attending to information differently.</p>
+      <p>BMA computes the gate as a function of the query itself, so the gating decision can vary per query rather than being shared across all of them. The implementation and experiments, run against standard gated attention as a baseline, are on GitHub.</p>
+    </div>
+
+    <div class="project">
+      <p class="project-tag">open source, CUDA and Triton</p>
+      <h2 class="project-title">Graphton, sparse kernels for graph networks</h2>
+      <div class="project-figure">
+        <img src="images/placeholder.svg" alt="Figure placeholder, replace with a diagram of the sparse graph kernels">
+      </div>
+      <p>Graph neural network operations are often implemented against a dense adjacency matrix, which is simple to write but scales quadratically with the number of nodes regardless of how sparse the actual graph is. Once a graph is large enough, this stops fitting comfortably in memory well before compute becomes the constraint.</p>
+      <p>Graphton implements the same operations as a set of Triton kernels working directly on the sparse edge list, so memory use scales with the number of edges rather than the square of the number of nodes.</p>
+    </div>
+
+    <h2 class="section-title">Smaller reproductions</h2>
+    <ul class="plain-list">
+      <li><span class="label">ReLM</span><span class="sub">an offline proximal policy optimization implementation, built to check understanding of the algorithm against a known reference rather than to extend it</span></li>
+      <li><span class="label">TinyStories reproduction</span><span class="sub">training scripts for small language models on the TinyStories dataset, following the original paper's setup</span></li>
+      <li><span class="label">KANT</span><span class="sub">a training library for Kolmogorov-Arnold networks, covering the basis functions and training loop needed to reproduce results from the original architecture</span></li>
+    </ul>
+
+    <footer class="page-foot">code, where public, is linked from each repository's own readme</footer>
+  </main>
+
+</div>
+</body>
+</html>
