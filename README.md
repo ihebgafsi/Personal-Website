@@ -1,87 +1,145 @@
 # ihebgafsi.tn
 
-Static site, plain HTML, CSS, and a small amount of vanilla JavaScript. No build step, no framework, no npm install.
+Static site, plain HTML, CSS, and a small amount of vanilla JavaScript. No build step, no framework, no npm install. The only external dependencies are CDN-loaded libraries referenced by `<script>`/`<link>` tags in each HTML file, they load at runtime in the visitor's browser and require nothing installed locally.
 
-## Adding or editing content
+## What each page can do
 
-Nothing on the Research, Publications, or Background pages is hardcoded in HTML. Each page reads a JSON file at load time and builds the page from it.
+| Page | Reads | Notes |
+|---|---|---|
+| `research.html` | `data/projects.json` | KaTeX math in any text field |
+| `publications.html` | `data/publications.json` | KaTeX math in any text field |
+| `background.html` | `data/background.json` | KaTeX math in any text field |
+| `blog.html` | `data/posts.json` | plain list, no rendering beyond the summary text |
+| `post.html` | `data/posts.json` | full markdown pipeline, see below |
 
-- `data/projects.json`, the project write-ups and the "smaller reproductions" list on `research.html`
-- `data/publications.json`, the preprint list on `publications.html`
-- `data/background.json`, education, experience, and distinctions on `background.html`
-- `data/posts.json`, blog posts, listed on `blog.html` and rendered individually on `post.html`
+Nothing is hardcoded in HTML on these pages. Each reads a JSON file at load time and builds the page from it. To add or edit content, copy an existing object in the relevant array, edit the fields, save. No HTML editing required.
 
-To add a project, open `data/projects.json` and copy one of the existing objects inside the `"projects"` array, then edit the fields. Same pattern for a publication, a background entry, or a blog post, copy an existing object in the relevant array, edit it, save. No HTML editing required, and the page picks it up on next load.
+## Blog posts: markdown, math, diagrams, plots, code
 
-Field reference:
+Each post in `data/posts.json` has a `body` field holding **one raw markdown string**. `post.html` runs it through, in order:
 
-**projects.json**, each project has `tag`, `title`, `image`, `imageAlt`, and `paragraphs` (an array of strings, one per paragraph, HTML like `<a>` is allowed inside a paragraph string). The `smaller` array takes `label` and `description`.
+1. **marked.js** — converts the markdown to HTML (headings, bold/italic, lists, links, images, tables, blockquotes, fenced code blocks).
+2. **Mermaid** — any ` ```mermaid ` fenced block is rendered as an SVG diagram in place.
+3. **Plotly** — any ` ```plot ` fenced block containing a JSON object is rendered as an interactive chart in place.
+4. **highlight.js** — any other fenced code block gets syntax highlighting.
+5. **KaTeX** — `$inline$`, `$$display$$`, `\(inline\)`, and `\[display\]` math anywhere in the rendered text is typeset. This step also runs on `research.html`, `publications.html`, and `background.html`, so equations work in project descriptions and publication entries too, not just blog posts.
+
+Everything below is valid inside a post's `body` string.
+
+### Headings, emphasis, lists, links, images
+
+```markdown
+## A heading
+
+Some **bold** and *italic* text, a [link](https://example.com), and:
+
+- a list
+- with items
+
+![alt text](images/my-figure.png)
+```
+
+### Math
+
+```markdown
+Inline: the estimator is $\hat\theta = \arg\min_\theta \mathcal{L}(\theta)$.
+
+Display:
+$$
+\bar{R} = \exp\left(\tfrac{1}{2}\log(R_1 R_2^{-1})\right) R_2
+$$
+```
+
+### Diagrams
+
+Any [Mermaid](https://mermaid.js.org/) diagram type works, flowcharts, sequence diagrams, state diagrams, and so on:
+
+````markdown
+```mermaid
+graph LR
+A[Input] --> B[Model]
+B --> C[Output]
+```
+````
+
+### Plots
+
+A ` ```plot ` block takes a JSON object with `data` and `layout` keys, passed straight to [Plotly](https://plotly.com/javascript/) (`Plotly.newPlot(el, data, layout)`), so anything in Plotly's chart type reference works, scatter, bar, heatmaps, 3D surfaces, and so on:
+
+````markdown
+```plot
+{
+  "data": [
+    {"x": [1, 2, 3], "y": [2, 4, 3], "type": "scatter", "mode": "lines+markers", "name": "series A"}
+  ],
+  "layout": {"title": "Example", "xaxis": {"title": "x"}, "yaxis": {"title": "y"}}
+}
+```
+````
+
+The values in `data`/`layout` are pasted-in numbers, there's no live computation. Generate them however you like (a Python script, a spreadsheet, by hand) and paste the resulting JSON in. If the JSON is malformed, the post shows an inline error instead of failing silently, check the browser console for the exact parse error if that happens.
+
+### Code
+
+Fenced code blocks with any language other than `mermaid` or `plot` get syntax highlighted:
+
+````markdown
+```python
+def f(x):
+    return x ** 2
+```
+````
+
+## Writing JSON strings correctly
+
+`body` is one JSON string, not an array. That means:
+
+- Every literal newline in your markdown must be written as `\n` inside the JSON string, since JSON strings can't contain raw line breaks.
+- Every literal `"` inside the markdown must be escaped as `\"`.
+- Every literal `\` (common in LaTeX, `\frac`, `\log`, `\left`) must be escaped as `\\`. So `\frac{1}{2}` in your markdown is written `\\frac{1}{2}` inside the JSON string.
+
+This is fiddly to write by hand directly in the JSON file. The reliable way to add a post:
+
+1. Write the markdown body in a plain `.md` file or any text editor, as normal markdown with real line breaks and single backslashes.
+2. Convert it to a JSON string and merge it into `data/posts.json` with a short Python script:
+
+   ```python
+   import json
+
+   with open("my_post.md") as f:
+       body = f.read()
+
+   with open("data/posts.json") as f:
+       data = json.load(f)
+
+   data["posts"].insert(0, {
+       "slug": "my-post-slug",
+       "title": "My post title",
+       "date": "2026.08",
+       "summary": "One or two sentences for the blog list page.",
+       "body": body
+   })
+
+   with open("data/posts.json", "w") as f:
+       json.dump(data, f, indent=2, ensure_ascii=False)
+       f.write("\n")
+   ```
+
+   `json.dump` handles all the escaping. Run this locally before committing, don't hand-edit multi-paragraph markdown directly inside the JSON.
+
+There is currently one demo post in `data/posts.json`, `geodesic-averaging-demo`, that exercises every block type above (math, a diagram, a plot, a code block). Read its `body` field as a worked example, then delete the object once you've written a real post. `blog.html` will show "No posts yet." again if you empty the array back to `{ "posts": [] }`.
+
+## Other content types
+
+**projects.json**, each project has `tag`, `title`, `image`, `imageAlt`, and `paragraphs` (an array of strings, one per paragraph, HTML and `$math$` are both allowed inside a paragraph string). The `smaller` array takes `label` and `description`.
 
 **publications.json**, each entry has `title`, `meta` (authors and year), and `status` (venue or link, HTML allowed).
 
 **background.json**, `education` and `experience` each take `title`, `when`, `where`, `body`. `distinctions` takes `label` and `sub`.
 
-**posts.json**, currently `{ "posts": [] }`, empty on purpose. Each post takes `slug` (used in the URL, letters, numbers, and hyphens, no spaces), `title`, `date`, `summary` (shown on the list page), and `paragraphs` (the full post, same array-of-strings format as projects). `blog.html` lists every post in the array in the order given, most recent first is the usual convention but nothing enforces it, so keep the array itself in that order. Each list entry links to `post.html?slug=<slug>`, which looks up the matching post and renders it, there is no separate HTML file per post.
+**posts.json**, each post takes `slug` (used in the URL, letters, numbers, and hyphens, no spaces), `title`, `date`, `summary` (shown on the list page, plain text, no markdown rendering there), and `body` (the full markdown post, see above). `blog.html` lists every post in the array in the order given, most recent first is the usual convention but nothing enforces it, so keep the array itself in that order. Each list entry links to `post.html?slug=<slug>`, which looks up the matching post and renders it, there is no separate HTML file per post. Each `slug` must be unique, if two posts share a slug, `post.html` renders whichever one it finds first.
 
-### Publishing a blog post, step by step
-
-1. Open `data/posts.json`. It starts out as:
-
-   ```json
-   { "posts": [] }
-   ```
-
-2. Replace the empty `[]` with an array containing one post object:
-
-   ```json
-   {
-     "posts": [
-       {
-         "slug": "first-post",
-         "title": "A title for the post",
-         "date": "2026.08",
-         "summary": "One or two sentences, shown on the blog list page.",
-         "paragraphs": [
-           "The first paragraph of the post.",
-           "The second paragraph. A link can go inside a paragraph like <a href=\"research.html\">this</a>."
-         ]
-       }
-     ]
-   }
-   ```
-
-3. For a second post, add another object after the first one, separated by a comma:
-
-   ```json
-   {
-     "posts": [
-       {
-         "slug": "first-post",
-         "title": "A title for the post",
-         "date": "2026.08",
-         "summary": "One or two sentences, shown on the blog list page.",
-         "paragraphs": ["..."]
-       },
-       {
-         "slug": "second-post",
-         "title": "Another title",
-         "date": "2026.09",
-         "summary": "...",
-         "paragraphs": ["..."]
-       }
-     ]
-   }
-   ```
-
-   The comma between the two `{ ... }` objects is required, and there must not be a trailing comma after the last one, that is the most common way to break the file. If the blog list stops showing posts after an edit, this is the first thing to check.
-
-4. Save the file and reload `blog.html`. The new post appears in the list, and clicking its title opens `post.html?slug=first-post`, which renders the title, date, and paragraphs automatically. No other file needs to change.
-
-5. Each `slug` must be unique. If two posts share a slug, `post.html` will always render the first one it finds with that slug.
-
-### Editing or removing content
-
-To edit an existing project, publication, background entry, or post, find its object in the matching JSON file and change the field values directly. To remove one, delete its entire `{ ... }` object from the array, along with the comma that separated it from its neighbor. In every case, save the file and reload the page, there is nothing to rebuild.
+To edit existing content, find its object in the matching JSON file and change the field values directly. To remove one, delete its entire `{ ... }` object from the array, along with the comma that separated it from its neighbor.
 
 ## Local preview
 
@@ -91,7 +149,7 @@ Opening `index.html` directly by double clicking it will not work correctly, bro
 python3 -m http.server 8000
 ```
 
-then visit `http://localhost:8000` in a browser. This limitation does not apply once the site is on GitHub Pages, it is only a local file:// restriction.
+then visit `http://localhost:8000` in a browser. This limitation does not apply once the site is on GitHub Pages, it is only a local file:// restriction. The CDN libraries (KaTeX, marked, Mermaid, Plotly, highlight.js) require an internet connection to load, they are not vendored into the repo.
 
 ## Deploy on GitHub Pages
 
@@ -105,18 +163,32 @@ then visit `http://localhost:8000` in a browser. This limitation does not apply 
 
 - `images/profile.jpg`, currently a placeholder monogram, swap for a real photo, same filename.
 - `images/placeholder.svg`, used as the figure in each project entry. Replace the file itself to update every project figure at once, or add per-project images and point each project's `image` field in `data/projects.json` at its own file.
+- Any images referenced from a blog post's markdown body, drop the file in `images/` and reference it as `![alt](images/filename.png)`.
 
 ## Structure
 
 ```
 index.html            home
-research.html         projects, reads data/projects.json
-publications.html     preprints, reads data/publications.json
-background.html       education and experience, reads data/background.json
+research.html         projects, reads data/projects.json, KaTeX enabled
+publications.html     preprints, reads data/publications.json, KaTeX enabled
+background.html       education and experience, reads data/background.json, KaTeX enabled
 blog.html             post list, reads data/posts.json
 post.html             single post template, reads ?slug= from the URL
-css/style.css         all styling, one file
-js/render.js           fetches the JSON files and fills in each page
+                       full pipeline: marked -> Mermaid -> Plotly -> highlight.js -> KaTeX
+css/style.css          all styling, one file, includes .md-content rules for rendered posts
+js/render.js           fetches the JSON files, fills in each page, runs the rendering passes
 data/*.json            the actual content
-images/                 photo and figures
+images/                 photos and figures
 ```
+
+## CDN dependencies
+
+All loaded via `<script>`/`<link>` tags, no local install, no lockfile:
+
+- [KaTeX](https://katex.org/) 0.16.11, math typesetting, on every content page
+- [marked](https://marked.js.org/) 12.0.2, markdown to HTML, `post.html` only
+- [Mermaid](https://mermaid.js.org/) 10.x, diagrams, `post.html` only
+- [Plotly.js](https://plotly.com/javascript/) 2.x, charts, `post.html` only
+- [highlight.js](https://highlightjs.org/) 11.9.0, code syntax highlighting, `post.html` only
+
+Pinned major/minor versions in the CDN URLs, bump them by editing the version number in the `<script src>`/`<link href>` if you want newer releases.

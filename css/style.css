@@ -357,3 +357,124 @@ footer.page-foot {
   font-size: 11.5px;
   color: var(--faint);
 }
+
+/* ---------------------------------------------
+   Markdown blog content (post.html, #post-body)
+--------------------------------------------- */
+.md-content h1,
+.md-content h2,
+.md-content h3,
+.md-content h4 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 32px 0 12px;
+}
+
+.md-content h1 { font-size: 24px; }
+.md-content h2 { font-size: 20px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+.md-content h3 { font-size: 17px; }
+.md-content h4 { font-size: 15.5px; color: var(--graphite); }
+
+.md-content > *:first-child { margin-top: 0; }
+
+.md-content p { margin: 0 0 16px; }
+
+.md-content ul,
+.md-content ol {
+  margin: 0 0 16px;
+  padding-left: 22px;
+}
+
+.md-content li { margin-bottom: 6px; }
+
+.md-content blockquote {
+  margin: 0 0 16px;
+  padding: 2px 0 2px 16px;
+  border-left: 2px solid var(--accent-soft);
+  color: var(--graphite);
+}
+
+.md-content hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 32px 0;
+}
+
+.md-content a {
+  color: var(--accent);
+}
+
+.md-content code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: #eceae1;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.md-content pre {
+  background: #24292e;
+  padding: 16px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 0 0 20px;
+}
+
+.md-content pre code {
+  background: none;
+  padding: 0;
+  color: #e6e6e6;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.md-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 20px;
+  font-size: 14.5px;
+}
+
+.md-content th,
+.md-content td {
+  border: 1px solid var(--rule);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.md-content th {
+  background: #efeee7;
+  font-weight: 600;
+}
+
+.md-content img {
+  border: 1px solid var(--rule);
+  margin: 8px 0 20px;
+}
+
+/* Mermaid diagrams, rendered into a div.mermaid-diagram in place of the
+   ```mermaid code fence */
+.mermaid-diagram {
+  margin: 8px 0 24px;
+  padding: 16px;
+  background: #efeee7;
+  border: 1px solid var(--rule);
+  overflow-x: auto;
+}
+
+.mermaid-diagram svg { margin: 0 auto; display: block; }
+
+/* Plotly charts, rendered into a div.plot-container in place of the
+   ```plot code fence */
+.plot-container {
+  margin: 8px 0 24px;
+  border: 1px solid var(--rule);
+  padding: 8px;
+}
+
+/* KaTeX display math can overflow narrow viewports, scroll instead of
+   breaking layout */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
