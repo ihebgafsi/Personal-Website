@@ -1,0 +1,62 @@
+{
+  "education": [
+    {
+      "title": "INSAT, Engineer's degree, computer networks and telecommunications",
+      "when": "2023 to 2027 expected",
+      "where": "Tunis, Tunisia",
+      "body": "Specializing in machine learning and computer vision, with a minor in mathematics and optimization. Ranked first in mathematics within the program."
+    },
+    {
+      "title": "INSAT, classes préparatoires",
+      "when": "2022 to 2023",
+      "where": "Tunis, Tunisia",
+      "body": "Intensive preparatory coursework in mathematics and physics. Ranked first in mathematics."
+    },
+    {
+      "title": "Lycée de Jemmel, baccalaureate, computer science",
+      "when": "2021 to 2022",
+      "where": "Monastir, Tunisia",
+      "body": "Ranked 4th nationally out of 9,282 candidates."
+    }
+  ],
+  "experience": [
+    {
+      "title": "Interhuman AI, applied research intern",
+      "when": "Jul 2026 to present",
+      "where": "Copenhagen, Denmark, remote",
+      "body": "Behavioral AI research group. Contributing to a multimodal model of human behavior built from video, audio, and text."
+    },
+    {
+      "title": "Wise Vision AI Technologies, undergraduate research student",
+      "when": "Nov 2024 to Feb 2025",
+      "where": "Tunis, Tunisia",
+      "body": "Multimodal training pipelines and multi person tracking across camera views."
+    },
+    {
+      "title": "Callem AI, R&D machine learning intern",
+      "when": "Jun 2024 to Oct 2024",
+      "where": "Paris and Tunis, hybrid",
+      "body": "Inference efficiency and alignment work on open weight language models, alongside a small multi agent planning system."
+    },
+    {
+      "title": "Silver Brain AI AG, R&D AI intern",
+      "when": "Dec 2023 to May 2024",
+      "where": "Zurich, Switzerland, remote",
+      "body": "Fine tuning and alignment of language models for a chemical reasoning application, and work on routing for a mixture of experts model."
+    }
+  ],
+  "distinctions": [
+    {
+      "label": "1st of 300",
+      "sub": "National Robotics Weekend, Perseverance Rover Challenge, 2025"
+    },
+    {
+      "label": "Ministerial top student award",
+      "sub": "Province of Monastir, 2022"
+    },
+    {
+      "label": "23rd of about 500,000",
+      "sub": "One Million Arab Coders, 2020"
+    }
+  ]
+}

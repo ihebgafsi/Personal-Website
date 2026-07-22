@@ -1,0 +1,78 @@
+{
+  "projects": [
+    {
+      "tag": "ongoing, at Interhuman AI",
+      "title": "Representing orientation on its own manifold",
+      "image": "images/placeholder.svg",
+      "imageAlt": "Figure placeholder, replace with a diagram of the fusion method",
+      "paragraphs": [
+        "When a system combines signals from more than one source, a common shortcut is to flatten everything into a vector and concatenate. This works poorly for quantities like head or body orientation, which live on a rotation group rather than a flat space. Averaging two rotations directly, or treating the difference between them as Euclidean, does not correspond to anything meaningful on the underlying manifold.",
+        "The approach keeps this kind of feature in its natural representation, elements of SO(3) or SE(3), through the combination step, rather than projecting it into a flat vector first. Combination is instead defined using operations that respect the geometry, so that a merged estimate stays a valid rotation rather than an average of two matrices that no longer is one. The setting is multimodal behavior recognition, where pose and orientation from video are combined with signal from audio."
+      ]
+    },
+    {
+      "tag": "undergraduate project, submitted preprint",
+      "title": "Cuboid reconstruction from multiple views",
+      "image": "images/placeholder.svg",
+      "imageAlt": "Figure placeholder, replace with a diagram of the reconstruction method",
+      "paragraphs": [
+        "Given 2D bounding boxes of the same object seen from several cameras, and the assumption that the object moves on a plane rather than through arbitrary 3D motion, it is possible to recover a consistent 3D cuboid without full 3D annotation or depth sensors. The planar motion assumption removes enough degrees of freedom that the reconstruction becomes solvable from bounding boxes alone, given known camera geometry across views.",
+        "The method defines a small set of canonical geometric archetypes for how a box can project under this constraint, and fits the observed 2D boxes against them across views to recover a single consistent cuboid. It started as part of a livestock monitoring project, tracking cattle from multiple fixed cameras, and the write-up generalizes the representation to other planar motion tracking settings. Preprint details are on the <a href=\"publications.html\">publications</a> page."
+      ]
+    },
+    {
+      "tag": "preprint, 2024",
+      "title": "RAYGo, retrieval for asynchronous action planning",
+      "image": "images/placeholder.svg",
+      "imageAlt": "Figure placeholder, replace with a diagram of the retrieval and planning loop",
+      "paragraphs": [
+        "An agent planning over a long horizon, where actions do not resolve immediately and outcomes arrive asynchronously, cannot condition purely on its current state the way a short horizon planner can. Much of the relevant information is in what happened earlier in the episode, and in similar situations from other episodes.",
+        "RAYGo retrieves past action traces relevant to the current context and uses them to condition the next action, rather than planning from the current state alone. It is framed for large scale settings where the space of possible action sequences is too large to search directly, so retrieval stands in for search."
+      ]
+    },
+    {
+      "tag": "preprint, 2024",
+      "title": "NORA, evolving low rank adaptation",
+      "image": "images/placeholder.svg",
+      "imageAlt": "Figure placeholder, replace with a diagram of per layer rank search",
+      "paragraphs": [
+        "Low rank adaptation fine tunes a language model by learning a small update to each weight matrix, constrained to a fixed rank chosen ahead of time and usually applied uniformly across layers. That choice is typically manual, and there is no strong reason every layer should need the same rank.",
+        "NORA uses neuro-evolution to search over rank configurations per layer instead of fixing one value globally, treating the rank assignment itself as something to be optimized rather than set by hand before training starts."
+      ]
+    },
+    {
+      "tag": "open source, PyTorch and JAX",
+      "title": "BMA, query conditioned gating for attention",
+      "image": "images/placeholder.svg",
+      "imageAlt": "Figure placeholder, replace with a diagram of the gating mechanism",
+      "paragraphs": [
+        "Gated attention, as used in recent transformer variants, applies a gate to the attention output that is learned but fixed with respect to the query, the same gate value regardless of what is being asked for. That is a capacity bottleneck when different queries would benefit from attending to information differently.",
+        "BMA computes the gate as a function of the query itself, so the gating decision can vary per query rather than being shared across all of them. The implementation and experiments, run against standard gated attention as a baseline, are on GitHub."
+      ]
+    },
+    {
+      "tag": "open source, CUDA and Triton",
+      "title": "Graphton, sparse kernels for graph networks",
+      "image": "images/placeholder.svg",
+      "imageAlt": "Figure placeholder, replace with a diagram of the sparse graph kernels",
+      "paragraphs": [
+        "Graph neural network operations are often implemented against a dense adjacency matrix, which is simple to write but scales quadratically with the number of nodes regardless of how sparse the actual graph is. Once a graph is large enough, this stops fitting comfortably in memory well before compute becomes the constraint.",
+        "Graphton implements the same operations as a set of Triton kernels working directly on the sparse edge list, so memory use scales with the number of edges rather than the square of the number of nodes."
+      ]
+    }
+  ],
+  "smaller": [
+    {
+      "label": "ReLM",
+      "description": "an offline proximal policy optimization implementation, built to check understanding of the algorithm against a known reference rather than to extend it"
+    },
+    {
+      "label": "TinyStories reproduction",
+      "description": "training scripts for small language models on the TinyStories dataset, following the original paper's setup"
+    },
+    {
+      "label": "KANT",
+      "description": "a training library for Kolmogorov-Arnold networks, covering the basis functions and training loop needed to reproduce results from the original architecture"
+    }
+  ]
+}

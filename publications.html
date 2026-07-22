@@ -12,7 +12,7 @@
 <div class="wrap">
 
   <aside class="sidebar">
-    <img class="avatar" src="images/profile.png" alt="Photo of Iheb Gafsi">
+    <img class="avatar" src="images/profile.jpg" alt="Photo of Iheb Gafsi">
     <p class="name">Iheb Gafsi</p>
     <p class="role">student, Tunis</p>
 
@@ -40,33 +40,14 @@
     <h1 class="page-title">Publications</h1>
     <p class="dim">Preprints and manuscripts, in reverse chronological order.</p>
 
-    <div class="pub">
-      <p class="pub-title">Canonical geometric archetypes for multi view 3D cuboid reconstruction from 2D bounding boxes of planar motion objects</p>
-      <p class="pub-meta">Gafsi, I. et al.</p>
-      <p class="pub-status">Submitted to ACIVS 2026, currently under review.</p>
-    </div>
-
-    <div class="pub">
-      <p class="pub-title">Generalizing canonical geometric cuboid representations beyond planar motion object tracking</p>
-      <p class="pub-meta">Gafsi, I.</p>
-      <p class="pub-status">Manuscript in preparation.</p>
-    </div>
-
-    <div class="pub">
-      <p class="pub-title">RAYGo, retrieve as you go for large scale asynchronous action planning</p>
-      <p class="pub-meta">Gafsi, I., Ben Ammar, A., Labba, F. (2024)</p>
-      <p class="pub-status">Zenodo preprint. <a href="https://doi.org/10.5281/zenodo.14253984">doi.org/10.5281/zenodo.14253984</a></p>
-    </div>
-
-    <div class="pub">
-      <p class="pub-title">NORA, neuro evolution of low rank adaptation of language models</p>
-      <p class="pub-meta">Gafsi, I. (2024)</p>
-      <p class="pub-status">EasyChair preprint, easychair:15133.</p>
-    </div>
+    <div id="publications-list"></div>
 
     <footer class="page-foot">links open the preprint hosts directly, no accounts required</footer>
   </main>
 
 </div>
+
+<script src="js/render.js"></script>
+<script>renderPublications("publications-list");</script>
 </body>
 </html>

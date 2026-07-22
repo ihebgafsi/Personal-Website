@@ -1,0 +1,24 @@
+{
+  "publications": [
+    {
+      "title": "Canonical geometric archetypes for multi view 3D cuboid reconstruction from 2D bounding boxes of planar motion objects",
+      "meta": "Gafsi, I. et al.",
+      "status": "Submitted to ACIVS 2026, currently under review."
+    },
+    {
+      "title": "Generalizing canonical geometric cuboid representations beyond planar motion object tracking",
+      "meta": "Gafsi, I.",
+      "status": "Manuscript in preparation."
+    },
+    {
+      "title": "RAYGo, retrieve as you go for large scale asynchronous action planning",
+      "meta": "Gafsi, I., Ben Ammar, A., Labba, F. (2024)",
+      "status": "Zenodo preprint. <a href=\"https://doi.org/10.5281/zenodo.14253984\">doi.org/10.5281/zenodo.14253984</a>"
+    },
+    {
+      "title": "NORA, neuro evolution of low rank adaptation of language models",
+      "meta": "Gafsi, I. (2024)",
+      "status": "EasyChair preprint, easychair:15133."
+    }
+  ]
+}
