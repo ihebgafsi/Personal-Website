@@ -9,8 +9,9 @@ Nothing on the Research, Publications, or Background pages is hardcoded in HTML.
 - `data/projects.json`, the project write-ups and the "smaller reproductions" list on `research.html`
 - `data/publications.json`, the preprint list on `publications.html`
 - `data/background.json`, education, experience, and distinctions on `background.html`
+- `data/posts.json`, blog posts, listed on `blog.html` and rendered individually on `post.html`
 
-To add a project, open `data/projects.json` and copy one of the existing objects inside the `"projects"` array, then edit the fields. Same pattern for a publication or a background entry, copy an existing object in the relevant array, edit it, save. No HTML editing required, and the page picks it up on next load.
+To add a project, open `data/projects.json` and copy one of the existing objects inside the `"projects"` array, then edit the fields. Same pattern for a publication, a background entry, or a blog post, copy an existing object in the relevant array, edit it, save. No HTML editing required, and the page picks it up on next load.
 
 Field reference:
 
@@ -19,6 +20,8 @@ Field reference:
 **publications.json**, each entry has `title`, `meta` (authors and year), and `status` (venue or link, HTML allowed).
 
 **background.json**, `education` and `experience` each take `title`, `when`, `where`, `body`. `distinctions` takes `label` and `sub`.
+
+**posts.json**, currently `{ "posts": [] }`, empty on purpose. Each post takes `slug` (used in the URL, letters, numbers, and hyphens, no spaces), `title`, `date`, `summary` (shown on the list page), and `paragraphs` (the full post, same array-of-strings format as projects). `blog.html` lists every post in the array in the order given, most recent first is the usual convention but nothing enforces it, so keep the array itself in that order. Each list entry links to `post.html?slug=<slug>`, which looks up the matching post and renders it, there is no separate HTML file per post.
 
 ## Local preview
 
@@ -50,6 +53,8 @@ index.html            home
 research.html         projects, reads data/projects.json
 publications.html     preprints, reads data/publications.json
 background.html       education and experience, reads data/background.json
+blog.html             post list, reads data/posts.json
+post.html             single post template, reads ?slug= from the URL
 css/style.css         all styling, one file
 js/render.js           fetches the JSON files and fills in each page
 data/*.json            the actual content

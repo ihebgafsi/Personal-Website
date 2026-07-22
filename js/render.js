@@ -112,3 +112,58 @@ function renderBackground(educationId, experienceId, distinctionsId) {
     if (eduContainer) showError(eduContainer, "data/background.json");
   });
 }
+
+function renderBlogList(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  loadData("data/posts.json").then(function (data) {
+    const posts = data.posts || [];
+    if (posts.length === 0) {
+      container.innerHTML = '<p class="dim">No posts yet.</p>';
+      return;
+    }
+    container.innerHTML = posts.map(function (post) {
+      return (
+        '<div class="post-item">' +
+        '<p class="post-item-title"><a href="post.html?slug=' +
+        encodeURIComponent(post.slug) + '">' + post.title + "</a></p>" +
+        '<p class="pub-meta">' + post.date + "</p>" +
+        '<p class="post-summary">' + post.summary + "</p>" +
+        "</div>"
+      );
+    }).join("");
+  }).catch(function () {
+    showError(container, "data/posts.json");
+  });
+}
+
+function renderPost(titleId, dateId, bodyId) {
+  const titleEl = document.getElementById(titleId);
+  const dateEl = document.getElementById(dateId);
+  const bodyEl = document.getElementById(bodyId);
+  if (!bodyEl) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get("slug");
+
+  loadData("data/posts.json").then(function (data) {
+    const posts = data.posts || [];
+    const post = posts.filter(function (p) { return p.slug === slug; })[0];
+
+    if (!post) {
+      if (titleEl) titleEl.textContent = "Post not found";
+      bodyEl.innerHTML = '<p class="dim">There is no post at this address. <a href="blog.html">Back to the blog list</a>.</p>';
+      return;
+    }
+
+    document.title = post.title + " \u00b7 Iheb Gafsi";
+    if (titleEl) titleEl.textContent = post.title;
+    if (dateEl) dateEl.textContent = post.date;
+    bodyEl.innerHTML = (post.paragraphs || []).map(function (text) {
+      return "<p>" + text + "</p>";
+    }).join("");
+  }).catch(function () {
+    showError(bodyEl, "data/posts.json");
+  });
+}
