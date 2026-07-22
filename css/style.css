@@ -456,20 +456,34 @@ footer.page-foot {
    ```mermaid code fence */
 .mermaid-diagram {
   margin: 8px 0 24px;
-  padding: 16px;
+  padding: 24px 16px;
   background: #efeee7;
   border: 1px solid var(--rule);
   overflow-x: auto;
+  display: flex;
+  justify-content: center;
 }
 
-.mermaid-diagram svg { margin: 0 auto; display: block; }
+.mermaid-diagram svg {
+  max-width: 100%;
+  height: auto !important;
+  display: block;
+}
 
 /* Plotly charts, rendered into a div.plot-container in place of the
-   ```plot code fence */
+   ```plot code fence. min-height matches the default height set in
+   renderPlotsIn so the container never collapses to zero before Plotly
+   has measured it. */
 .plot-container {
   margin: 8px 0 24px;
   border: 1px solid var(--rule);
   padding: 8px;
+  min-height: 420px;
+}
+
+.plot-container .js-plotly-plot,
+.plot-container .plot-container.plotly {
+  width: 100%;
 }
 
 /* KaTeX display math can overflow narrow viewports, scroll instead of

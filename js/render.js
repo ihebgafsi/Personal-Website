@@ -71,7 +71,25 @@ function renderPlotsIn(el) {
     try {
       const spec = JSON.parse(block.textContent);
       block.parentElement.replaceWith(holder);
-      Plotly.newPlot(holder, spec.data || [], spec.layout || {}, spec.config || { responsive: true });
+
+      // Plotly sizes itself off the container's current box. An empty div
+      // that was just inserted has no height yet unless one is given
+      // explicitly, which is what was collapsing charts to a sliver.
+      // These are defaults, anything set in the post's own "layout" wins.
+      const layout = Object.assign(
+        { height: 420, margin: { t: 48, r: 24, b: 48, l: 56 }, font: { family: "IBM Plex Mono, monospace", size: 12 } },
+        spec.layout || {}
+      );
+      const config = Object.assign({ responsive: true, displaylogo: false }, spec.config || {});
+
+      Plotly.newPlot(holder, spec.data || [], layout, config);
+
+      // Re-measure once the surrounding layout (fonts, KaTeX, images) has
+      // settled, since those can still shift the container's width after
+      // the initial plot.
+      window.addEventListener("load", function () {
+        Plotly.Plots.resize(holder);
+      });
     } catch (err) {
       holder.innerHTML = '<p class="dim">Plot failed to render, invalid JSON in the plot block (' + err.message + ").</p>";
       block.parentElement.replaceWith(holder);

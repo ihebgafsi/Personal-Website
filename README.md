@@ -62,6 +62,19 @@ B --> C[Output]
 ```
 ````
 
+Node and edge labels can contain real KaTeX math: wrap the label in quotes and `$$...$$`.
+
+````markdown
+```mermaid
+graph LR
+A["Video: pose estimate"] -->|"$$SO(3)$$"| C[Geometric fusion]
+B["Audio: prosody features"] -->|"$$\mathbb{R}^n$$"| C
+C --> D[Fused behavior estimate]
+```
+````
+
+Plain `SO3` or `R^n` as a label renders as literal text, not math, Mermaid doesn't know it's supposed to be an equation unless it's wrapped in `$$...$$`. The diagram theme (fonts, colors, curved edges) is configured once in `post.html`'s inline script, not per diagram.
+
 ### Plots
 
 A ` ```plot ` block takes a JSON object with `data` and `layout` keys, passed straight to [Plotly](https://plotly.com/javascript/) (`Plotly.newPlot(el, data, layout)`), so anything in Plotly's chart type reference works, scatter, bar, heatmaps, 3D surfaces, and so on:
@@ -78,6 +91,8 @@ A ` ```plot ` block takes a JSON object with `data` and `layout` keys, passed st
 ````
 
 The values in `data`/`layout` are pasted-in numbers, there's no live computation. Generate them however you like (a Python script, a spreadsheet, by hand) and paste the resulting JSON in. If the JSON is malformed, the post shows an inline error instead of failing silently, check the browser console for the exact parse error if that happens.
+
+`render.js` applies a default `layout` (height 420px, margins, the site's mono font) before yours, so a bare `{"data": [...]}` with no `layout` key still renders at a sane size instead of collapsing to zero height. Anything you put in your own `layout` object overrides the matching default key.
 
 ### Code
 

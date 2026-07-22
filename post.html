@@ -50,12 +50,28 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2/plotly.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js"></script>
 <script src="js/render.js"></script>
 <script>
-  if (window.mermaid) mermaid.initialize({ startOnLoad: false, theme: "neutral" });
+  if (window.mermaid) {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "base",
+      themeVariables: {
+        fontFamily: "IBM Plex Mono, monospace",
+        fontSize: "14px",
+        primaryColor: "#f7f7f3",
+        primaryTextColor: "#1c1c1a",
+        primaryBorderColor: "#5c5c56",
+        lineColor: "#5c5c56",
+        secondaryColor: "#efeee7",
+        tertiaryColor: "#efeee7"
+      },
+      flowchart: { curve: "basis", htmlLabels: true, padding: 16 }
+    });
+  }
   renderPost("post-title", "post-date", "post-body");
 </script>
 </body>
