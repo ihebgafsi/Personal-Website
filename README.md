@@ -23,6 +23,66 @@ Field reference:
 
 **posts.json**, currently `{ "posts": [] }`, empty on purpose. Each post takes `slug` (used in the URL, letters, numbers, and hyphens, no spaces), `title`, `date`, `summary` (shown on the list page), and `paragraphs` (the full post, same array-of-strings format as projects). `blog.html` lists every post in the array in the order given, most recent first is the usual convention but nothing enforces it, so keep the array itself in that order. Each list entry links to `post.html?slug=<slug>`, which looks up the matching post and renders it, there is no separate HTML file per post.
 
+### Publishing a blog post, step by step
+
+1. Open `data/posts.json`. It starts out as:
+
+   ```json
+   { "posts": [] }
+   ```
+
+2. Replace the empty `[]` with an array containing one post object:
+
+   ```json
+   {
+     "posts": [
+       {
+         "slug": "first-post",
+         "title": "A title for the post",
+         "date": "2026.08",
+         "summary": "One or two sentences, shown on the blog list page.",
+         "paragraphs": [
+           "The first paragraph of the post.",
+           "The second paragraph. A link can go inside a paragraph like <a href=\"research.html\">this</a>."
+         ]
+       }
+     ]
+   }
+   ```
+
+3. For a second post, add another object after the first one, separated by a comma:
+
+   ```json
+   {
+     "posts": [
+       {
+         "slug": "first-post",
+         "title": "A title for the post",
+         "date": "2026.08",
+         "summary": "One or two sentences, shown on the blog list page.",
+         "paragraphs": ["..."]
+       },
+       {
+         "slug": "second-post",
+         "title": "Another title",
+         "date": "2026.09",
+         "summary": "...",
+         "paragraphs": ["..."]
+       }
+     ]
+   }
+   ```
+
+   The comma between the two `{ ... }` objects is required, and there must not be a trailing comma after the last one, that is the most common way to break the file. If the blog list stops showing posts after an edit, this is the first thing to check.
+
+4. Save the file and reload `blog.html`. The new post appears in the list, and clicking its title opens `post.html?slug=first-post`, which renders the title, date, and paragraphs automatically. No other file needs to change.
+
+5. Each `slug` must be unique. If two posts share a slug, `post.html` will always render the first one it finds with that slug.
+
+### Editing or removing content
+
+To edit an existing project, publication, background entry, or post, find its object in the matching JSON file and change the field values directly. To remove one, delete its entire `{ ... }` object from the array, along with the comma that separated it from its neighbor. In every case, save the file and reload the page, there is nothing to rebuild.
+
 ## Local preview
 
 Opening `index.html` directly by double clicking it will not work correctly, browsers block `fetch` requests from `file://` URLs, so the JSON never loads. Serve the folder instead:
