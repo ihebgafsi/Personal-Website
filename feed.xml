@@ -5,7 +5,14 @@
     <link>https://ihebgafsi.tn</link>
     <description>Notes on geometric deep learning, representation learning, and applied research.</description>
     <language>en</language>
-    <lastBuildDate>Thu, 23 Jul 2026 08:22:25 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 23 Jul 2026 15:02:01 +0000</lastBuildDate>
+    <item>
+      <title>What a Neural ODE cannot separate, and why adding depth never fixes it</title>
+      <link>https://ihebgafsi.tn/post.html?slug=augmented-neural-odes-topology</link>
+      <guid isPermaLink="false">augmented-neural-odes-topology</guid>
+      <pubDate>Sat, 01 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Neural ODE flows are homeomorphisms of the state space, an ODE's trajectories cannot cross, which makes concentric classes unsolvable at any training budget, not just hard. Works through the adjoint method, an exact vector-field example, an explicit inseparable dataset, and Augmented Neural ODEs as the actual fix.</description>
+    </item>
     <item>
       <title>Superposition: how a neural network fits more ideas than it has neurons</title>
       <link>https://ihebgafsi.tn/post.html?slug=superposition-more-features-than-neurons</link>

@@ -77,7 +77,12 @@ function renderPlotsIn(el) {
       // explicitly, which is what was collapsing charts to a sliver.
       // These are defaults, anything set in the post's own "layout" wins.
       const layout = Object.assign(
-        { height: 420, margin: { t: 48, r: 24, b: 48, l: 56 }, font: { family: "IBM Plex Mono, monospace", size: 12 } },
+        {
+          height: 420,
+          margin: { t: 48, r: 24, b: 88, l: 56 },
+          font: { family: "IBM Plex Mono, monospace", size: 12 },
+          legend: { orientation: "h", x: 0, y: -0.22, xanchor: "left", font: { size: 11 } }
+        },
         spec.layout || {}
       );
       const config = Object.assign({ responsive: true, displaylogo: false }, spec.config || {});
