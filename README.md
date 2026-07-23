@@ -144,6 +144,29 @@ This is fiddly to write by hand directly in the JSON file. The reliable way to a
 
 There is currently one demo post in `data/posts.json`, `geodesic-averaging-demo`, that exercises every block type above (math, a diagram, a plot, a code block). Read its `body` field as a worked example, then delete the object once you've written a real post. `blog.html` will show "No posts yet." again if you empty the array back to `{ "posts": [] }`.
 
+## A markdown/math gotcha, and how it's handled
+
+Markdown (CommonMark, which `marked.js` follows) treats a backslash before punctuation like `{ } | , ;` as an *escape sequence* and silently drops the backslash, since it has no way to know that text is LaTeX rather than prose. Written naively, `\left\{ x \,\middle|\, y \right\}` would come out of `marked.parse` as `\left{ x ,\middle|, y \right}`, backslashes gone, formula broken, and KaTeX either throws an error or renders nonsense.
+
+`render.js` works around this: before handing a post's `body` to `marked.parse`, `protectMath()` pulls every `$...$`, `$$...$$`, `\(...\)`, and `\[...\]` span out into an opaque placeholder token (fenced code blocks are left completely alone, CommonMark already treats their contents literally). `marked` then only ever sees inert tokens where the math was, so its escaping rules can't touch the LaTeX. `restoreMath()` pastes the original, untouched math source back into the HTML afterward, and KaTeX renders that. You don't need to do anything differently when writing a post, write LaTeX the normal way, backslashes and all, this is handled for you.
+
+## Post thumbnails
+
+Each post can optionally have a `thumbnail` field, a path to an image:
+
+```json
+{
+  "slug": "my-post",
+  "title": "...",
+  "date": "2026.08",
+  "summary": "...",
+  "thumbnail": "images/thumbnails/my-post.svg",
+  "body": "..."
+}
+```
+
+If present, it shows as a small square next to the entry on `blog.html`, and as a full-width banner above the title on the post itself. If omitted, both spots are simply skipped, nothing breaks and no broken-image icon appears. Any image format works, `images/thumbnails/` in this repo currently holds small original SVG line-art (no photos, no external art), one per existing post, in the site's own color palette, drop your own PNG/JPG/SVG in and point `thumbnail` at it.
+
 ## Other content types
 
 **projects.json**, each project has `tag`, `title`, `image`, `imageAlt`, and `paragraphs` (an array of strings, one per paragraph, HTML and `$math$` are both allowed inside a paragraph string). The `smaller` array takes `label` and `description`.
@@ -152,7 +175,7 @@ There is currently one demo post in `data/posts.json`, `geodesic-averaging-demo`
 
 **background.json**, `education` and `experience` each take `title`, `when`, `where`, `body`. `distinctions` takes `label` and `sub`.
 
-**posts.json**, each post takes `slug` (used in the URL, letters, numbers, and hyphens, no spaces), `title`, `date`, `summary` (shown on the list page, plain text, no markdown rendering there), and `body` (the full markdown post, see above). `blog.html` lists every post in the array in the order given, most recent first is the usual convention but nothing enforces it, so keep the array itself in that order. Each list entry links to `post.html?slug=<slug>`, which looks up the matching post and renders it, there is no separate HTML file per post. Each `slug` must be unique, if two posts share a slug, `post.html` renders whichever one it finds first.
+**posts.json**, each post takes `slug` (used in the URL, letters, numbers, and hyphens, no spaces), `title`, `date`, `summary` (shown on the list page, plain text, no markdown rendering there), `thumbnail` (optional, path to an image, see above), and `body` (the full markdown post, see above). `blog.html` lists every post in the array in the order given, most recent first is the usual convention but nothing enforces it, so keep the array itself in that order. Each list entry links to `post.html?slug=<slug>`, which looks up the matching post and renders it, there is no separate HTML file per post. Each `slug` must be unique, if two posts share a slug, `post.html` renders whichever one it finds first.
 
 To edit existing content, find its object in the matching JSON file and change the field values directly. To remove one, delete its entire `{ ... }` object from the array, along with the comma that separated it from its neighbor.
 

@@ -104,6 +104,54 @@ function highlightCodeIn(el) {
   });
 }
 
+/* CommonMark treats a backslash before punctuation like { } | , ; as an
+   escape sequence and silently drops the backslash, since it has no idea
+   that text is LaTeX rather than prose. That corrupts things like
+   \left\{, \middle|, \,  before KaTeX ever sees them. Fix: pull every
+   $...$ / $$...$$ / \(...\) / \[...\] span out into an opaque placeholder
+   token before marked.parse runs, then paste the original raw math back
+   into the resulting HTML afterward. Fenced code blocks are left alone
+   entirely, since CommonMark already treats their contents literally. */
+function protectMath(markdown) {
+  const store = [];
+  const mathPatterns = [
+    /\$\$[\s\S]+?\$\$/g,
+    /\\\[[\s\S]+?\\\]/g,
+    /\\\([\s\S]+?\\\)/g,
+    /\$[^\n$]+?\$/g
+  ];
+
+  function protectSegment(segment) {
+    let text = segment;
+    mathPatterns.forEach(function (re) {
+      text = text.replace(re, function (match) {
+        const token = "\u0000MATH" + store.length + "\u0000";
+        store.push(match);
+        return token;
+      });
+    });
+    return text;
+  }
+
+  const fenceRe = /```[\s\S]*?```/g;
+  let result = "";
+  let lastIndex = 0;
+  let m;
+  while ((m = fenceRe.exec(markdown)) !== null) {
+    result += protectSegment(markdown.slice(lastIndex, m.index));
+    result += m[0]; // fenced code, left untouched
+    lastIndex = fenceRe.lastIndex;
+  }
+  result += protectSegment(markdown.slice(lastIndex));
+  return { text: result, store: store };
+}
+
+function restoreMath(html, store) {
+  return html.replace(/\u0000MATH(\d+)\u0000/g, function (_, i) {
+    return store[Number(i)];
+  });
+}
+
 /* ---------------------------------------------
    Page renderers
 --------------------------------------------- */
@@ -216,13 +264,18 @@ function renderBlogList(containerId) {
       return;
     }
     container.innerHTML = posts.map(function (post) {
+      const thumb = post.thumbnail
+        ? '<div class="post-thumb"><img src="' + post.thumbnail + '" alt=""></div>'
+        : "";
       return (
         '<div class="post-item">' +
+        thumb +
+        '<div class="post-item-text">' +
         '<p class="post-item-title"><a href="post.html?slug=' +
         encodeURIComponent(post.slug) + '">' + post.title + "</a></p>" +
         '<p class="pub-meta">' + post.date + "</p>" +
         '<p class="post-summary">' + post.summary + "</p>" +
-        "</div>"
+        "</div></div>"
       );
     }).join("");
   }).catch(function () {
@@ -234,6 +287,7 @@ function renderPost(titleId, dateId, bodyId) {
   const titleEl = document.getElementById(titleId);
   const dateEl = document.getElementById(dateId);
   const bodyEl = document.getElementById(bodyId);
+  const heroEl = document.getElementById("post-hero");
   if (!bodyEl) return;
 
   const params = new URLSearchParams(window.location.search);
@@ -252,11 +306,20 @@ function renderPost(titleId, dateId, bodyId) {
     document.title = post.title + " \u00b7 Iheb Gafsi";
     if (titleEl) titleEl.textContent = post.title;
     if (dateEl) dateEl.textContent = post.date;
+    if (heroEl) {
+      heroEl.innerHTML = post.thumbnail
+        ? '<img src="' + post.thumbnail + '" alt="">'
+        : "";
+    }
 
     bodyEl.className = "md-content";
-    bodyEl.innerHTML = window.marked
-      ? marked.parse(post.body || "")
-      : "<pre>" + (post.body || "") + "</pre>";
+    if (window.marked) {
+      const protectedResult = protectMath(post.body || "");
+      const html = marked.parse(protectedResult.text);
+      bodyEl.innerHTML = restoreMath(html, protectedResult.store);
+    } else {
+      bodyEl.innerHTML = "<pre>" + (post.body || "") + "</pre>";
+    }
 
     // order matters: pull out diagrams and plots (they live in fenced
     // code blocks marked.js just produced) before highlighting whatever
