@@ -167,11 +167,21 @@ Each post can optionally have a `thumbnail` field, a path to an image:
 
 If present, it shows as a small square next to the entry on `blog.html`, and as a full-width banner above the title on the post itself. If omitted, both spots are simply skipped, nothing breaks and no broken-image icon appears. Any image format works, `images/thumbnails/` in this repo currently holds small original SVG line-art (no photos, no external art), one per existing post, in the site's own color palette, drop your own PNG/JPG/SVG in and point `thumbnail` at it.
 
+## Loading only what a post needs
+
+Mermaid and Plotly are big (Plotly alone is close to a megabyte minified), and most individual posts won't use either. `post.html` no longer loads them unconditionally, `render.js` scans a post's raw markdown for ` ```mermaid `, ` ```plot `, and other code fences first, and only fetches the corresponding library if that specific post actually contains one. A text-and-math-only post loads neither. KaTeX and marked are still loaded eagerly on every post, since virtually every post uses at least one of them and both are comparatively light.
+
+## Headings, table of contents, and the RSS feed
+
+Every `##`/`###` heading in a post's rendered markdown automatically gets a stable `#id` (slugified from its text) and a small hover-to-reveal `#` link next to it for sharing a link straight to that section. If a post has three or more such headings, a table of contents box is inserted automatically above the post body, built from those same headings, nothing to configure per post.
+
+`feed.xml` at the repo root is a standard RSS 2.0 feed, linked from `<head>` on every page (so feed readers/browsers can auto-discover it) and as a visible "RSS feed" link on `blog.html`. It isn't generated automatically, there's no build step to hook it into, run `python3 scripts/generate_feed.py` after adding, editing, or removing a post and commit the resulting `feed.xml` alongside your `posts.json` change. It reads `title`, `summary`, `slug`, and `date` directly from `data/posts.json`; since post dates are month-precision (`"2026.08"`), the feed uses the 1st of that month as each item's timestamp, item order in the feed follows array order in `posts.json`, not the timestamp.
+
 ## Cache-busting
 
-Every page loads `css/style.css` and `js/render.js` with a `?v=3` query string. Browsers (and GitHub Pages' own CDN) cache plain `.css`/`.js` files aggressively, sometimes for longer than you'd expect, so editing either file and pushing isn't always enough to see the change immediately, the browser may keep serving the old cached copy from before your edit. The `?v=N` suffix works around that: browsers treat `style.css?v=3` and `style.css?v=4` as different URLs entirely, so bumping the number forces a fresh fetch.
+Every page loads `css/style.css` and `js/render.js` with a `?v=5` query string, currently, bumped once per round of changes. Browsers (and GitHub Pages' own CDN) cache plain `.css`/`.js` files aggressively, sometimes for longer than you'd expect, so editing either file and pushing isn't always enough to see the change immediately, the browser may keep serving the old cached copy from before your edit. The `?v=N` suffix works around that: browsers treat `style.css?v=5` and `style.css?v=6` as different URLs entirely, so bumping the number forces a fresh fetch.
 
-**Whenever you edit `css/style.css` or `js/render.js`, bump the `?v=N` in every `<link>`/`<script>` tag that references it**, across all six HTML files. Easiest as a find-and-replace: `?v=3` → `?v=4`, applied to every `.html` file. If a change to either file doesn't seem to be showing up after you deploy, this is the first thing to check, followed by an actual hard refresh (Ctrl/Cmd+Shift+R, or open the page in a private window) to rule out the browser's own cache on top of the server's.
+**Whenever you edit `css/style.css` or `js/render.js`, bump the `?v=N` in every `<link>`/`<script>` tag that references it**, across all six HTML files. Easiest as a find-and-replace across every `.html` file, bump the number by one from whatever it currently is. If a change to either file doesn't seem to be showing up after you deploy, this is the first thing to check, followed by an actual hard refresh (Ctrl/Cmd+Shift+R, or open the page in a private window) to rule out the browser's own cache on top of the server's.
 
 ## Other content types
 
@@ -223,6 +233,8 @@ css/style.css          all styling, one file, includes .md-content rules for ren
 js/render.js           fetches the JSON files, fills in each page, runs the rendering passes
 data/*.json            the actual content
 images/                 photos and figures
+feed.xml               RSS feed, regenerate with scripts/generate_feed.py after editing posts
+scripts/generate_feed.py   reads data/posts.json, writes feed.xml
 ```
 
 ## CDN dependencies

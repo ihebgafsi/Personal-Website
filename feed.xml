@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Iheb Gafsi</title>
+    <link>https://ihebgafsi.tn</link>
+    <description>Notes on geometric deep learning, representation learning, and applied research.</description>
+    <language>en</language>
+    <lastBuildDate>Thu, 23 Jul 2026 07:51:57 +0000</lastBuildDate>
+    <item>
+      <title>Why gimbal lock can never be fixed, and why that's the same fact as a bad map of the world</title>
+      <link>https://ihebgafsi.tn/post.html?slug=why-gimbal-lock-cannot-be-fixed</link>
+      <guid isPermaLink="false">why-gimbal-lock-cannot-be-fixed</guid>
+      <pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate>
+      <description>A short, checkable proof that no three-number coordinate system for 3D rotations can ever avoid a singularity, why compactness is the entire reason, where Euler angles and rotation vectors each hide theirs, the hairy ball theorem as a sibling fact, and why this is the exact same theorem that makes every map of the Earth distorted somewhere.</description>
+    </item>
+    <item>
+      <title>SO(3) and SE(3): the groups underneath every rotation</title>
+      <link>https://ihebgafsi.tn/post.html?slug=so3-se3-elegant-groups</link>
+      <guid isPermaLink="false">so3-se3-elegant-groups</guid>
+      <pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate>
+      <description>What makes SO(3) a group, the tangent space and exponential map, exactly why Euler angles hit gimbal lock at pitch = 90 degrees, the SU(2) double cover, and how SE(3) extends all of it to rigid motion.</description>
+    </item>
+    <item>
+      <title>A short history of learning where things go: hand-crafted features to geometry-aware embeddings</title>
+      <link>https://ihebgafsi.tn/post.html?slug=elegant-representation-learning-history</link>
+      <guid isPermaLink="false">elegant-representation-learning-history</guid>
+      <pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate>
+      <description>From SIFT and bag-of-words, through word2vec and distributional semantics, to contrastive and masked self-supervision, to choosing embedding geometry (hyperbolic, equivariant) on purpose. Same question throughout: what should the representation space look like.</description>
+    </item>
+    <item>
+      <title>Beyond the grid: a short tour of geometric deep learning</title>
+      <link>https://ihebgafsi.tn/post.html?slug=beyond-the-grid-geometric-deep-learning</link>
+      <guid isPermaLink="false">beyond-the-grid-geometric-deep-learning</guid>
+      <pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate>
+      <description>Convolutions assume a grid. Graphs, point clouds, and meshes don't have one. A walkthrough of equivariance, permutation-invariant message passing, receptive field growth on real vs small-world topology, and where rotation equivariance connects back to the orientation-fusion project.</description>
+    </item>
+    <item>
+      <title>Demo post: math, diagrams, and plots in markdown</title>
+      <link>https://ihebgafsi.tn/post.html?slug=geodesic-averaging-demo</link>
+      <guid isPermaLink="false">geodesic-averaging-demo</guid>
+      <pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate>
+      <description>A template post showing every supported block: KaTeX math, a Mermaid diagram, a Plotly chart, and a code block. Delete once you've read data/posts.json and README.md.</description>
+    </item>
+  </channel>
+</rss>

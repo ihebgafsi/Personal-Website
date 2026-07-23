@@ -171,6 +171,56 @@ function initMermaid() {
   });
 }
 
+function slugify(text, used) {
+  let base = text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+  if (!base) base = "section";
+  let slug = base;
+  let n = 2;
+  while (used.has(slug)) {
+    slug = base + "-" + n;
+    n++;
+  }
+  used.add(slug);
+  return slug;
+}
+
+/* Gives every h2/h3 in a post a stable #id and a hover-to-copy anchor
+   link, and returns the heading list so a table of contents can be
+   built from it, rather than re-scanning the DOM twice. */
+function addHeadingAnchorsIn(el) {
+  const used = new Set();
+  const headings = Array.prototype.slice.call(el.querySelectorAll("h2, h3"));
+  return headings.map(function (h) {
+    const id = slugify(h.textContent, used);
+    h.id = id;
+    const link = document.createElement("a");
+    link.href = "#" + id;
+    link.className = "heading-anchor";
+    link.setAttribute("aria-label", "Link to this section");
+    link.textContent = "#";
+    h.appendChild(link);
+    return { id: id, text: h.textContent.replace(/#$/, "").trim(), level: h.tagName === "H2" ? 2 : 3 };
+  });
+}
+
+function renderTocIn(tocEl, headings) {
+  if (!tocEl) return;
+  if (headings.length < 3) {
+    tocEl.innerHTML = "";
+    return;
+  }
+  tocEl.innerHTML =
+    '<p class="toc-label">Contents</p><ul>' +
+    headings.map(function (h) {
+      return '<li class="toc-level-' + h.level + '"><a href="#' + h.id + '">' + h.text + "</a></li>";
+    }).join("") +
+    "</ul>";
+}
+
 /* CommonMark treats a backslash before punctuation like { } | , ; as an
    escape sequence and silently drops the backslash, since it has no idea
    that text is LaTeX rather than prose. That corrupts things like
@@ -389,6 +439,9 @@ function renderPost(titleId, dateId, bodyId) {
       html = "<pre>" + (post.body || "") + "</pre>";
     }
     bodyEl.innerHTML = html;
+
+    const headings = addHeadingAnchorsIn(bodyEl);
+    renderTocIn(document.getElementById("post-toc"), headings);
 
     const needs = detectPostNeeds(post.body || "");
     const loaders = [];

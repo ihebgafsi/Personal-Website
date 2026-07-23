@@ -336,7 +336,7 @@ p { margin: 0 0 16px; }
 .post-thumb {
   flex: 0 0 240px;
   width: 240px;
-  height: 150px;
+  height: 240px;
   border: 1px solid var(--rule);
   background: #efeee7;
   padding: 10px;
@@ -391,7 +391,7 @@ p { margin: 0 0 16px; }
 
 @media (max-width: 480px) {
   .post-item { flex-direction: column; }
-  .post-thumb { width: 100%; height: 180px; }
+  .post-thumb { width: 100%; height: auto; aspect-ratio: 1 / 1; }
 }
 
 footer.page-foot {
@@ -413,6 +413,7 @@ footer.page-foot {
   font-weight: 600;
   letter-spacing: -0.01em;
   margin: 32px 0 12px;
+  scroll-margin-top: 24px;
 }
 
 .md-content h1 { font-size: 24px; }
@@ -496,6 +497,63 @@ footer.page-foot {
   border: 1px solid var(--rule);
   margin: 8px 0 20px;
 }
+
+.heading-anchor {
+  margin-left: 8px;
+  font-family: var(--mono);
+  font-size: 0.75em;
+  font-weight: 400;
+  color: var(--faint);
+  border-bottom: none;
+  opacity: 0;
+  text-decoration: none;
+}
+
+.md-content h2:hover .heading-anchor,
+.md-content h3:hover .heading-anchor,
+.heading-anchor:focus {
+  opacity: 1;
+}
+
+.post-toc {
+  margin: 0 0 32px;
+  padding: 14px 18px;
+  border: 1px solid var(--rule);
+  background: #efeee7;
+}
+
+.post-toc:empty { display: none; }
+
+.post-toc .toc-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+  margin: 0 0 8px;
+}
+
+.post-toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-toc li {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.post-toc li:last-child { margin-bottom: 0; }
+
+.post-toc .toc-level-3 { padding-left: 16px; }
+
+.post-toc a {
+  color: var(--ink);
+  border-bottom: none;
+}
+
+.post-toc a:hover { color: var(--accent); }
 
 /* Mermaid diagrams, rendered into a div.mermaid-diagram in place of the
    ```mermaid code fence */
