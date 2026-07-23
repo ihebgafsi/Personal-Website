@@ -5,7 +5,14 @@
     <link>https://ihebgafsi.tn</link>
     <description>Notes on geometric deep learning, representation learning, and applied research.</description>
     <language>en</language>
-    <lastBuildDate>Thu, 23 Jul 2026 07:51:57 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 23 Jul 2026 08:22:25 +0000</lastBuildDate>
+    <item>
+      <title>Superposition: how a neural network fits more ideas than it has neurons</title>
+      <link>https://ihebgafsi.tn/post.html?slug=superposition-more-features-than-neurons</link>
+      <guid isPermaLink="false">superposition-more-features-than-neurons</guid>
+      <pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate>
+      <description>The grandmother-cell intuition (one neuron, one concept) is wrong, and interpretability research shows why: networks pack more features than they have dimensions by using almost-orthogonal directions instead of one-per-neuron, a real trick backed by concentration of measure. Includes an actual Monte Carlo experiment showing random vectors becoming orthogonal as dimension grows.</description>
+    </item>
     <item>
       <title>Why gimbal lock can never be fixed, and why that's the same fact as a bad map of the world</title>
       <link>https://ihebgafsi.tn/post.html?slug=why-gimbal-lock-cannot-be-fixed</link>
