@@ -167,6 +167,12 @@ Each post can optionally have a `thumbnail` field, a path to an image:
 
 If present, it shows as a small square next to the entry on `blog.html`, and as a full-width banner above the title on the post itself. If omitted, both spots are simply skipped, nothing breaks and no broken-image icon appears. Any image format works, `images/thumbnails/` in this repo currently holds small original SVG line-art (no photos, no external art), one per existing post, in the site's own color palette, drop your own PNG/JPG/SVG in and point `thumbnail` at it.
 
+## Cache-busting
+
+Every page loads `css/style.css` and `js/render.js` with a `?v=3` query string. Browsers (and GitHub Pages' own CDN) cache plain `.css`/`.js` files aggressively, sometimes for longer than you'd expect, so editing either file and pushing isn't always enough to see the change immediately, the browser may keep serving the old cached copy from before your edit. The `?v=N` suffix works around that: browsers treat `style.css?v=3` and `style.css?v=4` as different URLs entirely, so bumping the number forces a fresh fetch.
+
+**Whenever you edit `css/style.css` or `js/render.js`, bump the `?v=N` in every `<link>`/`<script>` tag that references it**, across all six HTML files. Easiest as a find-and-replace: `?v=3` → `?v=4`, applied to every `.html` file. If a change to either file doesn't seem to be showing up after you deploy, this is the first thing to check, followed by an actual hard refresh (Ctrl/Cmd+Shift+R, or open the page in a private window) to rule out the browser's own cache on top of the server's.
+
 ## Other content types
 
 **projects.json**, each project has `tag`, `title`, `image`, `imageAlt`, and `paragraphs` (an array of strings, one per paragraph, HTML and `$math$` are both allowed inside a paragraph string). The `smaller` array takes `label` and `description`.
