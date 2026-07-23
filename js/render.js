@@ -104,6 +104,73 @@ function highlightCodeIn(el) {
   });
 }
 
+/* ---------------------------------------------
+   On-demand loading for the heavy per-post libraries. Mermaid and
+   Plotly are large (Plotly alone is close to a megabyte minified), and
+   most individual posts use neither, so post.html no longer loads them
+   unconditionally. Instead, renderPost() below scans the post's raw
+   markdown first and only fetches what that specific post needs.
+--------------------------------------------- */
+
+const CDN = {
+  mermaidJs: "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js",
+  plotlyJs: "https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2/plotly.min.js",
+  hljsCss: "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-light.min.css",
+  hljsJs: "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js"
+};
+
+function loadScriptOnce(src) {
+  return new Promise(function (resolve, reject) {
+    if (document.querySelector('script[src="' + src + '"]')) { resolve(); return; }
+    const s = document.createElement("script");
+    s.src = src;
+    s.onload = function () { resolve(); };
+    s.onerror = function () { reject(new Error("failed to load " + src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function loadStylesheetOnce(href) {
+  return new Promise(function (resolve) {
+    if (document.querySelector('link[href="' + href + '"]')) { resolve(); return; }
+    const l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = href;
+    l.onload = function () { resolve(); };
+    l.onerror = function () { resolve(); }; // a missing stylesheet shouldn't block rendering
+    document.head.appendChild(l);
+  });
+}
+
+function detectPostNeeds(body) {
+  const fenceLangs = (body.match(/```[a-zA-Z0-9_-]*\n/g) || []).map(function (f) {
+    return f.replace(/```/, "").replace(/\n/, "").trim();
+  });
+  return {
+    mermaid: fenceLangs.indexOf("mermaid") !== -1,
+    plot: fenceLangs.indexOf("plot") !== -1,
+    highlight: fenceLangs.some(function (lang) { return lang && lang !== "mermaid" && lang !== "plot"; })
+  };
+}
+
+function initMermaid() {
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: "base",
+    themeVariables: {
+      fontFamily: "IBM Plex Mono, monospace",
+      fontSize: "14px",
+      primaryColor: "#f7f7f3",
+      primaryTextColor: "#1c1c1a",
+      primaryBorderColor: "#5c5c56",
+      lineColor: "#5c5c56",
+      secondaryColor: "#efeee7",
+      tertiaryColor: "#efeee7"
+    },
+    flowchart: { curve: "basis", htmlLabels: true, padding: 16 }
+  });
+}
+
 /* CommonMark treats a backslash before punctuation like { } | , ; as an
    escape sequence and silently drops the backslash, since it has no idea
    that text is LaTeX rather than prose. That corrupts things like
@@ -313,21 +380,39 @@ function renderPost(titleId, dateId, bodyId) {
     }
 
     bodyEl.className = "md-content";
+    let html;
     if (window.marked) {
       const protectedResult = protectMath(post.body || "");
-      const html = marked.parse(protectedResult.text);
-      bodyEl.innerHTML = restoreMath(html, protectedResult.store);
+      html = marked.parse(protectedResult.text);
+      html = restoreMath(html, protectedResult.store);
     } else {
-      bodyEl.innerHTML = "<pre>" + (post.body || "") + "</pre>";
+      html = "<pre>" + (post.body || "") + "</pre>";
+    }
+    bodyEl.innerHTML = html;
+
+    const needs = detectPostNeeds(post.body || "");
+    const loaders = [];
+    if (needs.mermaid) {
+      loaders.push(loadScriptOnce(CDN.mermaidJs).then(initMermaid));
+    }
+    if (needs.plot) {
+      loaders.push(loadScriptOnce(CDN.plotlyJs));
+    }
+    if (needs.highlight) {
+      loaders.push(Promise.all([loadStylesheetOnce(CDN.hljsCss), loadScriptOnce(CDN.hljsJs)]));
     }
 
-    // order matters: pull out diagrams and plots (they live in fenced
-    // code blocks marked.js just produced) before highlighting whatever
-    // ordinary code blocks are left, then run math last.
-    renderMermaidIn(bodyEl);
-    renderPlotsIn(bodyEl);
-    highlightCodeIn(bodyEl);
-    renderMathIn(bodyEl);
+    Promise.all(loaders).catch(function (err) {
+      console.error(err);
+    }).then(function () {
+      // order matters: pull out diagrams and plots (they live in fenced
+      // code blocks marked.js just produced) before highlighting whatever
+      // ordinary code blocks are left, then run math last.
+      renderMermaidIn(bodyEl);
+      renderPlotsIn(bodyEl);
+      highlightCodeIn(bodyEl);
+      renderMathIn(bodyEl);
+    });
   }).catch(function () {
     showError(bodyEl, "data/posts.json");
   });
