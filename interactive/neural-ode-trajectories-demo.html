@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neural ODE trajectories, interactive · Iheb Gafsi</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f7f7f3;
+  --ink: #1c1c1a;
+  --graphite: #5c5c56;
+  --faint: #8a8a82;
+  --rule: #dcdad0;
+  --accent: #3e4c59;
+  --accent-soft: #6c7a89;
+  --warn: #a14a3a;
+  --serif: "Source Serif 4", Georgia, serif;
+  --mono: "IBM Plex Mono", "Courier New", monospace;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.6;
+  padding: 40px 20px 80px;
+}
+.wrap { max-width: 640px; margin: 0 auto; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+  margin: 0 0 10px;
+}
+h1 { font-size: 25px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 8px; }
+.dim { color: var(--graphite); font-size: 15.5px; }
+.stage {
+  border: 1px solid var(--rule);
+  background: #efeee7;
+  margin: 24px 0 12px;
+  padding: 8px;
+  position: relative;
+}
+canvas { display: block; width: 100%; height: auto; cursor: crosshair; }
+.legend {
+  display: flex;
+  gap: 20px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--graphite);
+  margin-bottom: 20px;
+}
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.controls { display: flex; gap: 12px; margin-bottom: 24px; }
+button.action {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  padding: 7px 14px;
+  border: 1px solid var(--rule);
+  background: none;
+  color: var(--graphite);
+  cursor: pointer;
+  border-radius: 2px;
+}
+button.action:hover { border-color: var(--accent); color: var(--ink); }
+.note {
+  font-size: 14.5px;
+  color: var(--graphite);
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">interactive · neural ODE trajectories</p>
+  <h1>Click anywhere. No trajectory ever crosses another.</h1>
+  <p class="dim">This is the exact vector field from the post, $\dot x = -0.1x - y,\ \dot y = x - 0.1y$, a spiral sink. Eight points start on the inner disk, eight on the outer ring, matching the post's dataset. Click anywhere to drop a new point and watch its trajectory. However long you run it, however many points you add, no two paths ever touch, that's uniqueness of ODE solutions, not a coincidence of this particular field.</p>
+
+  <div class="stage">
+    <canvas id="field" width="600" height="600"></canvas>
+  </div>
+
+  <div class="legend">
+    <span><span class="dot" style="background:#3e4c59"></span>inner class</span>
+    <span><span class="dot" style="background:#a14a3a"></span>outer class</span>
+    <span><span class="dot" style="background:#6c7a89"></span>added by you</span>
+  </div>
+
+  <div class="controls">
+    <button type="button" class="action" id="resetBtn">reset</button>
+    <button type="button" class="action" id="pauseBtn">pause</button>
+  </div>
+
+  <p class="note">Every trajectory spirals toward the origin, since this field is a stable sink, but the order they're nested in never changes. A point that starts enclosed by the outer ring stays enclosed by it the entire time. That's the homeomorphism property from the post, made concrete: try to draw two paths from different starting rings that cross, you can't, no matter where you click.</p>
+</div>
+
+<script>
+(function () {
+  const canvas = document.getElementById('field');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const RANGE = 2.6; // data units shown edge to edge
+
+  function toPx(x, y) {
+    return [W / 2 + (x / RANGE) * (W / 2), H / 2 - (y / RANGE) * (H / 2)];
+  }
+  function toData(px, py) {
+    return [((px - W / 2) / (W / 2)) * RANGE, -((py - H / 2) / (H / 2)) * RANGE];
+  }
+
+  function field(x, y) {
+    return [-0.1 * x - y, x - 0.1 * y];
+  }
+
+  function makeParticle(x, y, color) {
+    return { x: x, y: y, color: color, trail: [[x, y]] };
+  }
+
+  const inner = [];
+  const outer = [];
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2;
+    inner.push(makeParticle(0.5 * Math.cos(a), 0.5 * Math.sin(a), '#3e4c59'));
+    outer.push(makeParticle(2.0 * Math.cos(a), 2.0 * Math.sin(a), '#a14a3a'));
+  }
+  let extra = [];
+
+  function reset() {
+    inner.length = 0;
+    outer.length = 0;
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      inner.push(makeParticle(0.5 * Math.cos(a), 0.5 * Math.sin(a), '#3e4c59'));
+      outer.push(makeParticle(2.0 * Math.cos(a), 2.0 * Math.sin(a), '#a14a3a'));
+    }
+    extra = [];
+  }
+
+  function step(p, dt) {
+    const [fx, fy] = field(p.x, p.y);
+    p.x += fx * dt;
+    p.y += fy * dt;
+    p.trail.push([p.x, p.y]);
+    if (p.trail.length > 220) p.trail.shift();
+  }
+
+  function drawFieldBackground() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = '#dcdad0';
+    ctx.lineWidth = 1;
+    const step = 0.32;
+    for (let x = -RANGE; x <= RANGE; x += step) {
+      for (let y = -RANGE; y <= RANGE; y += step) {
+        const [fx, fy] = field(x, y);
+        const mag = Math.hypot(fx, fy) || 1e-6;
+        const len = 0.10;
+        const nx = fx / mag * len, ny = fy / mag * len;
+        const [x1, y1] = toPx(x - nx / 2, y - ny / 2);
+        const [x2, y2] = toPx(x + nx / 2, y + ny / 2);
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
+    }
+    ctx.fillStyle = '#1c1c1a';
+    const [ox, oy] = toPx(0, 0);
+    ctx.beginPath();
+    ctx.arc(ox, oy, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawParticle(p) {
+    ctx.strokeStyle = p.color;
+    ctx.lineWidth = 1.4;
+    ctx.globalAlpha = 0.55;
+    ctx.beginPath();
+    p.trail.forEach(function (pt, i) {
+      const [px, py] = toPx(pt[0], pt[1]);
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    });
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    const [px, py] = toPx(p.x, p.y);
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(px, py, 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  let running = true;
+  function frame() {
+    if (running) {
+      const dt = 0.03;
+      inner.forEach(function (p) { step(p, dt); });
+      outer.forEach(function (p) { step(p, dt); });
+      extra.forEach(function (p) { step(p, dt); });
+      drawFieldBackground();
+      inner.forEach(drawParticle);
+      outer.forEach(drawParticle);
+      extra.forEach(drawParticle);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  canvas.addEventListener('click', function (e) {
+    const rect = canvas.getBoundingClientRect();
+    const px = (e.clientX - rect.left) * (W / rect.width);
+    const py = (e.clientY - rect.top) * (H / rect.height);
+    const [x, y] = toData(px, py);
+    extra.push(makeParticle(x, y, '#6c7a89'));
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', reset);
+  document.getElementById('pauseBtn').addEventListener('click', function () {
+    running = !running;
+    this.textContent = running ? 'pause' : 'resume';
+  });
+
+  drawFieldBackground();
+  inner.forEach(drawParticle);
+  outer.forEach(drawParticle);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

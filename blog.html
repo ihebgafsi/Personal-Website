@@ -1,53 +1,72 @@
 <!doctype html>
 <html lang="en">
+<script data-goatcounter="https://ihebgafsi.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Blog · Iheb Gafsi</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="alternate" type="application/rss+xml" title="Iheb Gafsi, blog feed" href="feed.xml">
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=5">
+  <meta charset="utf-8">
+  <script>
+    (function () { try { var t = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) { } })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog · Iheb Gafsi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="alternate" type="application/rss+xml" title="Iheb Gafsi, blog feed" href="feed.xml">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 </head>
+
 <body>
-<div class="wrap">
+  <div class="wrap">
 
-  <aside class="sidebar">
-    <img class="avatar" src="images/profile.jpg" alt="Photo of Iheb Gafsi">
-    <p class="name">Iheb Gafsi</p>
-    <p class="role">student, Tunis</p>
+    <aside class="sidebar">
+      <img class="avatar" src="images/profile.jpg" alt="Photo of Iheb Gafsi">
+      <p class="name">Iheb Gafsi</p>
+      <p class="role">student, Tunis</p>
 
-    <nav class="primary">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="research.html">Research</a></li>
-        <li><a href="publications.html">Publications</a></li>
-        <li><a href="background.html">Background</a></li>
-        <li><a class="current" href="blog.html">Blog</a></li>
-      </ul>
-    </nav>
+      <nav class="primary">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="publications.html">Publications</a></li>
+          <li><a href="background.html">Background</a></li>
+          <li><a class="current" href="blog.html">Blog</a></li>
+        </ul>
+      </nav>
 
-    <div class="meta-block">
-      <dl>
-        <dt>location</dt><dd>Tunis, Tunisia</dd>
-        <dt>email</dt><dd><a href="mailto:iheb.gafsi@insat.ucar.tn">iheb.gafsi@insat.ucar.tn</a></dd>
-        <dt>github</dt><dd><a href="https://github.com/ihebgafsi">ihebgafsi</a></dd>
-        <dt>linkedin</dt><dd><a href="https://linkedin.com/in/ihebgafsi">ihebgafsi</a></dd>
-      </dl>
-    </div>
-  </aside>
+      <div class="meta-block">
+        <dl>
+          <dt>location</dt>
+          <dd>Tunis, Tunisia</dd>
+          <dt>email</dt>
+          <dd><a href="mailto:iheb.gafsi@insat.ucar.tn">iheb.gafsi@insat.ucar.tn</a></dd>
+          <dt>github</dt>
+          <dd><a href="https://github.com/ihebgafsi">ihebgafsi</a></dd>
+          <dt>linkedin</dt>
+          <dd><a href="https://linkedin.com/in/ihebgafsi">ihebgafsi</a></dd>
+        </dl>
+      </div>
+      <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">dark mode</button>
+    </aside>
 
-  <main>
-    <p class="eyebrow">blog</p>
-    <h1 class="page-title">Blog</h1>
-    <p class="dim">Notes, in reverse chronological order. <a href="feed.xml">RSS feed</a>.</p>
+    <main>
+      <p class="eyebrow">blog</p>
+      <h1 class="page-title">Blog</h1>
+      <p class="dim">Notes, in reverse chronological order. <a href="feed.xml">RSS feed</a>.</p>
 
-    <div id="blog-list"></div>
-  </main>
+      <div class="blog-controls">
+        <input type="search" id="blogSearch" placeholder="Search posts…" aria-label="Search posts">
+        <div class="tag-filters" id="blogTags"></div>
+      </div>
+      <div id="blog-list"></div>
+    </main>
 
-</div>
+  </div>
 
-<script src="js/render.js?v=5"></script>
-<script>renderBlogList("blog-list");</script>
+  <script src="js/render.js?v=5"></script>
+  <script>renderBlogList("blog-list"); initThemeToggle();</script>
 </body>
+
 </html>

@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>
+(function(){try{var t=localStorage.getItem('theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Blog · Iheb Gafsi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,6 +13,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="css/style.css?v=5">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 </head>
 <body>
 <div class="wrap">
@@ -37,6 +41,7 @@
         <dt>linkedin</dt><dd><a href="https://linkedin.com/in/ihebgafsi">ihebgafsi</a></dd>
       </dl>
     </div>
+    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">dark mode</button>
   </aside>
 
   <main>
@@ -44,8 +49,10 @@
     <div id="post-hero" class="post-hero"></div>
     <h1 class="page-title" id="post-title"></h1>
     <p class="post-meta" id="post-date"></p>
+    <p class="post-meta" id="post-reading-time"></p>
     <div id="post-toc" class="post-toc"></div>
     <div id="post-body"></div>
+    <div id="post-prevnext"></div>
   </main>
 
 </div>
@@ -56,6 +63,7 @@
 <script src="js/render.js?v=5"></script>
 <script>
   renderPost("post-title", "post-date", "post-body");
+  initThemeToggle();
 </script>
 </body>
 </html>

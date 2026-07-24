@@ -1,7 +1,12 @@
 <!doctype html>
 <html lang="en">
+<script data-goatcounter="https://ihebgafsi.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
 <head>
 <meta charset="utf-8">
+<script>
+(function(){try{var t=localStorage.getItem('theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Research · Iheb Gafsi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -9,6 +14,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="css/style.css?v=5">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 </head>
 <body>
 <div class="wrap">
@@ -36,6 +42,7 @@
         <dt>linkedin</dt><dd><a href="https://linkedin.com/in/ihebgafsi">ihebgafsi</a></dd>
       </dl>
     </div>
+    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">dark mode</button>
   </aside>
 
   <main>
@@ -56,6 +63,6 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 <script src="js/render.js?v=5"></script>
-<script>renderProjects("projects-list", "smaller-list");</script>
+<script>renderProjects("projects-list", "smaller-list"); initThemeToggle();</script>
 </body>
 </html>
