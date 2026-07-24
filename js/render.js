@@ -25,11 +25,42 @@ function showError(container, path) {
 }
 
 /* ---------------------------------------------
+   Theme toggle. A tiny inline script in each page's <head> already reads
+   localStorage and sets data-theme="dark" on <html> before first paint,
+   so there is no flash of the wrong theme. This function only wires up
+   the visible button and keeps its label in sync.
+--------------------------------------------- */
+
+function initThemeToggle(buttonId) {
+  const btn = document.getElementById(buttonId || "themeToggle");
+  if (!btn) return;
+  const root = document.documentElement;
+
+  function label() {
+    btn.textContent = root.getAttribute("data-theme") === "dark" ? "light mode" : "dark mode";
+  }
+  label();
+
+  btn.addEventListener("click", function () {
+    const isDark = root.getAttribute("data-theme") === "dark";
+    if (isDark) {
+      root.removeAttribute("data-theme");
+      localStorage.setItem("theme", "light");
+    } else {
+      root.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
+    }
+    label();
+  });
+}
+
+/* ---------------------------------------------
    Shared enhancement passes. Called after any
    container is filled with HTML, in this order:
    markdown is already applied by the caller,
-   then diagrams, then plots, then code highlighting,
-   then math last (KaTeX ignores <pre>/<code> by default).
+   then diagrams, then plots, then widgets, then code
+   highlighting and copy buttons, then math last (KaTeX
+   ignores <pre>/<code> by default).
 --------------------------------------------- */
 
 function renderMathIn(el) {
@@ -72,10 +103,6 @@ function renderPlotsIn(el) {
       const spec = JSON.parse(block.textContent);
       block.parentElement.replaceWith(holder);
 
-      // Plotly sizes itself off the container's current box. An empty div
-      // that was just inserted has no height yet unless one is given
-      // explicitly, which is what was collapsing charts to a sliver.
-      // These are defaults, anything set in the post's own "layout" wins.
       const layout = Object.assign(
         {
           height: 420,
@@ -89,9 +116,6 @@ function renderPlotsIn(el) {
 
       Plotly.newPlot(holder, spec.data || [], layout, config);
 
-      // Re-measure once the surrounding layout (fonts, KaTeX, images) has
-      // settled, since those can still shift the container's width after
-      // the initial plot.
       window.addEventListener("load", function () {
         Plotly.Plots.resize(holder);
       });
@@ -102,10 +126,74 @@ function renderPlotsIn(el) {
   });
 }
 
+/* ---------------------------------------------
+   Widgets: a ```widget fenced block containing raw HTML (with inline
+   <script> tags) for self-contained interactive demos, same idea as the
+   gimbal-lock and Neural ODE demos. innerHTML never executes <script>
+   tags it inserts, so after dropping the markup in, every <script>
+   inside it is torn out and rebuilt as a fresh element and reinserted,
+   which does execute. No CDN dependency, this always runs.
+--------------------------------------------- */
+
+function renderWidgetsIn(el) {
+  if (!el) return;
+  const blocks = Array.prototype.slice.call(el.querySelectorAll("pre code.language-widget"));
+  blocks.forEach(function (block) {
+    const source = block.textContent;
+    const holder = document.createElement("div");
+    holder.className = "post-widget";
+    block.parentElement.replaceWith(holder);
+    holder.innerHTML = source;
+
+    const scripts = Array.prototype.slice.call(holder.querySelectorAll("script"));
+    scripts.forEach(function (old) {
+      const fresh = document.createElement("script");
+      Array.prototype.forEach.call(old.attributes, function (attr) {
+        fresh.setAttribute(attr.name, attr.value);
+      });
+      fresh.textContent = old.textContent;
+      old.replaceWith(fresh);
+    });
+  });
+}
+
 function highlightCodeIn(el) {
   if (!window.hljs || !el) return;
   el.querySelectorAll("pre code").forEach(function (block) {
     hljs.highlightElement(block);
+  });
+}
+
+/* Wraps each remaining ordinary code block (mermaid/plot/widget blocks
+   are already gone by the time this runs) in a positioned container and
+   adds a small "copy" button that copies the raw code text. */
+function addCopyButtonsIn(el) {
+  if (!el) return;
+  Array.prototype.slice.call(el.querySelectorAll("pre")).forEach(function (pre) {
+    const code = pre.querySelector("code");
+    if (!code) return;
+    if (pre.parentElement && pre.parentElement.classList.contains("code-block-wrap")) return;
+
+    const wrap = document.createElement("div");
+    wrap.className = "code-block-wrap";
+    pre.parentElement.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "copy-btn";
+    btn.textContent = "copy";
+    btn.addEventListener("click", function () {
+      navigator.clipboard.writeText(code.textContent).then(function () {
+        btn.textContent = "copied";
+        btn.classList.add("copied");
+        setTimeout(function () { btn.textContent = "copy"; btn.classList.remove("copied"); }, 1400);
+      }).catch(function () {
+        btn.textContent = "failed";
+        setTimeout(function () { btn.textContent = "copy"; }, 1400);
+      });
+    });
+    wrap.appendChild(btn);
   });
 }
 
@@ -142,7 +230,7 @@ function loadStylesheetOnce(href) {
     l.rel = "stylesheet";
     l.href = href;
     l.onload = function () { resolve(); };
-    l.onerror = function () { resolve(); }; // a missing stylesheet shouldn't block rendering
+    l.onerror = function () { resolve(); };
     document.head.appendChild(l);
   });
 }
@@ -154,7 +242,7 @@ function detectPostNeeds(body) {
   return {
     mermaid: fenceLangs.indexOf("mermaid") !== -1,
     plot: fenceLangs.indexOf("plot") !== -1,
-    highlight: fenceLangs.some(function (lang) { return lang && lang !== "mermaid" && lang !== "plot"; })
+    highlight: fenceLangs.some(function (lang) { return lang && lang !== "mermaid" && lang !== "plot" && lang !== "widget"; })
   };
 }
 
@@ -193,9 +281,6 @@ function slugify(text, used) {
   return slug;
 }
 
-/* Gives every h2/h3 in a post a stable #id and a hover-to-copy anchor
-   link, and returns the heading list so a table of contents can be
-   built from it, rather than re-scanning the DOM twice. */
 function addHeadingAnchorsIn(el) {
   const used = new Set();
   const headings = Array.prototype.slice.call(el.querySelectorAll("h2, h3"));
@@ -226,14 +311,6 @@ function renderTocIn(tocEl, headings) {
     "</ul>";
 }
 
-/* CommonMark treats a backslash before punctuation like { } | , ; as an
-   escape sequence and silently drops the backslash, since it has no idea
-   that text is LaTeX rather than prose. That corrupts things like
-   \left\{, \middle|, \,  before KaTeX ever sees them. Fix: pull every
-   $...$ / $$...$$ / \(...\) / \[...\] span out into an opaque placeholder
-   token before marked.parse runs, then paste the original raw math back
-   into the resulting HTML afterward. Fenced code blocks are left alone
-   entirely, since CommonMark already treats their contents literally. */
 function protectMath(markdown) {
   const store = [];
   const mathPatterns = [
@@ -261,7 +338,7 @@ function protectMath(markdown) {
   let m;
   while ((m = fenceRe.exec(markdown)) !== null) {
     result += protectSegment(markdown.slice(lastIndex, m.index));
-    result += m[0]; // fenced code, left untouched
+    result += m[0];
     lastIndex = fenceRe.lastIndex;
   }
   result += protectSegment(markdown.slice(lastIndex));
@@ -272,6 +349,87 @@ function restoreMath(html, store) {
   return html.replace(/\u0000MATH(\d+)\u0000/g, function (_, i) {
     return store[Number(i)];
   });
+}
+
+/* ---------------------------------------------
+   Reading time. Rough, word-count-based, same convention most blogs use:
+   ~200 words per minute, rounded, floor of 1 minute.
+--------------------------------------------- */
+
+function estimateReadingTime(markdown) {
+  const words = (markdown || "").trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.round(words / 200));
+  return minutes + " min read";
+}
+
+/* ---------------------------------------------
+   Prev / next post navigation. posts.json order is newest-first, so the
+   "older" post is the next array entry and "newer" is the previous one.
+--------------------------------------------- */
+
+function renderPrevNextNav(navEl, posts, currentIndex) {
+  if (!navEl) return;
+  const older = posts[currentIndex + 1];
+  const newer = posts[currentIndex - 1];
+  const olderLink = older
+    ? '<a class="post-nav-link post-nav-prev" href="post.html?slug=' + encodeURIComponent(older.slug) + '"><span class="post-nav-label">&larr; older</span>' + older.title + "</a>"
+    : "<span></span>";
+  const newerLink = newer
+    ? '<a class="post-nav-link post-nav-next" href="post.html?slug=' + encodeURIComponent(newer.slug) + '"><span class="post-nav-label">newer &rarr;</span>' + newer.title + "</a>"
+    : "<span></span>";
+  navEl.innerHTML = '<div class="post-nav">' + olderLink + newerLink + "</div>";
+}
+
+/* ---------------------------------------------
+   BibTeX export. Deliberately derives everything from the existing
+   title/meta/status fields already in publications.json rather than
+   requiring new schema fields, an unknown year is written as "n.d."
+   instead of guessed.
+--------------------------------------------- */
+
+function slugifyKey(s) {
+  return (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 24);
+}
+
+function parsePubMeta(pub) {
+  const raw = pub.meta || "";
+  const yearMatch = raw.match(/\((\d{4})\)/);
+  const authors = raw.replace(/\s*\(\d{4}\)\s*$/, "").trim();
+  let year = yearMatch ? yearMatch[1] : null;
+  if (!year) {
+    const statusText = (pub.status || "").replace(/<[^>]+>/g, "");
+    const y = statusText.match(/\b(19|20)\d{2}\b/);
+    year = y ? y[0] : "n.d.";
+  }
+  return { authors: authors || raw, year: year };
+}
+
+function generateBibtex(pub) {
+  const parsed = parsePubMeta(pub);
+  const firstAuthorLast = (parsed.authors.split(",")[0] || "gafsi").toLowerCase().replace(/[^a-z]/g, "");
+  const key = firstAuthorLast + (parsed.year !== "n.d." ? parsed.year : "nd") + slugifyKey((pub.title || "").split(" ")[0]);
+  const statusText = (pub.status || "").replace(/<[^>]+>/g, "").trim();
+  const lines = [
+    "@misc{" + key + ",",
+    "  title = {" + pub.title + "},",
+    "  author = {" + parsed.authors + "},",
+    "  year = {" + parsed.year + "},",
+    "  note = {" + statusText + "}",
+    "}"
+  ];
+  return lines.join("\n");
+}
+
+function downloadText(filename, text) {
+  const blob = new Blob([text], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 /* ---------------------------------------------
@@ -319,15 +477,25 @@ function renderPublications(containerId) {
   if (!container) return;
 
   loadData("data/publications.json").then(function (data) {
-    container.innerHTML = (data.publications || []).map(function (pub) {
+    const pubs = data.publications || [];
+    container.innerHTML = pubs.map(function (pub, i) {
       return (
         '<div class="pub">' +
         '<p class="pub-title">' + pub.title + "</p>" +
         '<p class="pub-meta">' + pub.meta + "</p>" +
         '<p class="pub-status">' + pub.status + "</p>" +
+        '<button type="button" class="bibtex-btn" data-index="' + i + '">export BibTeX</button>' +
         "</div>"
       );
     }).join("");
+
+    container.querySelectorAll(".bibtex-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const pub = pubs[parseInt(btn.getAttribute("data-index"), 10)];
+        downloadText(slugifyKey((pub.title || "pub").split(" ")[0]) + ".bib", generateBibtex(pub));
+      });
+    });
+
     renderMathIn(container);
   }).catch(function () {
     showError(container, "data/publications.json");
@@ -375,9 +543,15 @@ function renderBackground(educationId, experienceId, distinctionsId) {
   });
 }
 
+/* Blog list: adds a live text search (title + summary + body) and a
+   tag filter built from the union of every post's tags array. Both
+   containers (#blogSearch, #blogTags) are optional, if either is
+   missing from the page's HTML that feature is silently skipped. */
 function renderBlogList(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
+  const searchEl = document.getElementById("blogSearch");
+  const tagsEl = document.getElementById("blogTags");
 
   loadData("data/posts.json").then(function (data) {
     const posts = data.posts || [];
@@ -385,21 +559,71 @@ function renderBlogList(containerId) {
       container.innerHTML = '<p class="dim">No posts yet.</p>';
       return;
     }
-    container.innerHTML = posts.map(function (post) {
+
+    const allTags = Array.from(new Set(posts.reduce(function (acc, p) {
+      return acc.concat(p.tags || []);
+    }, []))).sort();
+
+    let activeTag = null;
+    let query = "";
+
+    function itemHTML(post) {
       const thumb = post.thumbnail
         ? '<div class="post-thumb"><img src="' + post.thumbnail + '" alt=""></div>'
         : "";
+      const tagPills = (post.tags || []).map(function (t) {
+        return '<span class="tag-pill">' + t + "</span>";
+      }).join("");
       return (
         '<div class="post-item">' +
         thumb +
         '<div class="post-item-text">' +
         '<p class="post-item-title"><a href="post.html?slug=' +
         encodeURIComponent(post.slug) + '">' + post.title + "</a></p>" +
-        '<p class="pub-meta">' + post.date + "</p>" +
+        '<p class="pub-meta">' + post.date + " &middot; " + estimateReadingTime(post.body || post.summary || "") + "</p>" +
         '<p class="post-summary">' + post.summary + "</p>" +
+        (tagPills ? '<div class="tag-row">' + tagPills + "</div>" : "") +
         "</div></div>"
       );
-    }).join("");
+    }
+
+    function applyFilter() {
+      const q = query.trim().toLowerCase();
+      const filtered = posts.filter(function (p) {
+        const matchesTag = !activeTag || (p.tags || []).indexOf(activeTag) !== -1;
+        const haystack = (p.title + " " + p.summary + " " + (p.body || "")).toLowerCase();
+        const matchesQuery = !q || haystack.indexOf(q) !== -1;
+        return matchesTag && matchesQuery;
+      });
+      container.innerHTML = filtered.length
+        ? filtered.map(itemHTML).join("")
+        : '<p class="dim">No posts match.</p>';
+    }
+
+    if (tagsEl && allTags.length) {
+      tagsEl.innerHTML = allTags.map(function (t) {
+        return '<button type="button" class="tag-filter" data-tag="' + t + '">' + t + "</button>";
+      }).join("");
+      tagsEl.querySelectorAll(".tag-filter").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const t = btn.getAttribute("data-tag");
+          activeTag = activeTag === t ? null : t;
+          tagsEl.querySelectorAll(".tag-filter").forEach(function (b) {
+            b.classList.toggle("active", b.getAttribute("data-tag") === activeTag);
+          });
+          applyFilter();
+        });
+      });
+    }
+
+    if (searchEl) {
+      searchEl.addEventListener("input", function () {
+        query = searchEl.value;
+        applyFilter();
+      });
+    }
+
+    applyFilter();
   }).catch(function () {
     showError(container, "data/posts.json");
   });
@@ -410,6 +634,8 @@ function renderPost(titleId, dateId, bodyId) {
   const dateEl = document.getElementById(dateId);
   const bodyEl = document.getElementById(bodyId);
   const heroEl = document.getElementById("post-hero");
+  const readingEl = document.getElementById("post-reading-time");
+  const navEl = document.getElementById("post-prevnext");
   if (!bodyEl) return;
 
   const params = new URLSearchParams(window.location.search);
@@ -417,7 +643,8 @@ function renderPost(titleId, dateId, bodyId) {
 
   loadData("data/posts.json").then(function (data) {
     const posts = data.posts || [];
-    const post = posts.filter(function (p) { return p.slug === slug; })[0];
+    const idx = posts.findIndex(function (p) { return p.slug === slug; });
+    const post = idx !== -1 ? posts[idx] : null;
 
     if (!post) {
       if (titleEl) titleEl.textContent = "Post not found";
@@ -428,6 +655,7 @@ function renderPost(titleId, dateId, bodyId) {
     document.title = post.title + " \u00b7 Iheb Gafsi";
     if (titleEl) titleEl.textContent = post.title;
     if (dateEl) dateEl.textContent = post.date;
+    if (readingEl) readingEl.textContent = estimateReadingTime(post.body || "");
     if (heroEl) {
       heroEl.innerHTML = post.thumbnail
         ? '<img src="' + post.thumbnail + '" alt="">'
@@ -463,13 +691,13 @@ function renderPost(titleId, dateId, bodyId) {
     Promise.all(loaders).catch(function (err) {
       console.error(err);
     }).then(function () {
-      // order matters: pull out diagrams and plots (they live in fenced
-      // code blocks marked.js just produced) before highlighting whatever
-      // ordinary code blocks are left, then run math last.
       renderMermaidIn(bodyEl);
       renderPlotsIn(bodyEl);
+      renderWidgetsIn(bodyEl);
       highlightCodeIn(bodyEl);
+      addCopyButtonsIn(bodyEl);
       renderMathIn(bodyEl);
+      renderPrevNextNav(navEl, posts, idx);
     });
   }).catch(function () {
     showError(bodyEl, "data/posts.json");
