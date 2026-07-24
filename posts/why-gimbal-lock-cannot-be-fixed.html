@@ -1,15 +1,29 @@
 <!doctype html>
 <html lang="en">
-<script data-goatcounter="https://ihebgafsi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 <head>
   <meta charset="utf-8">
-  <script>
+  <title>Why gimbal lock can never be fixed, and why that&#x27;s the same fact as a bad map of the world · Iheb Gafsi</title>
+<meta name="description" content="A short, checkable proof that no three-number coordinate system for 3D rotations can ever avoid a singularity, why compactness is the entire reason, where Euler angles and rotation vectors each hide theirs, the hairy ball theorem as a sibling fact, and why this is the exact same theorem that makes every map of the Earth distorted somewhere.">
+<link rel="canonical" href="https://ihebgafsi.tn/posts/why-gimbal-lock-cannot-be-fixed.html">
+<meta name="post-slug" content="why-gimbal-lock-cannot-be-fixed">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Why gimbal lock can never be fixed, and why that&#x27;s the same fact as a bad map of the world">
+<meta property="og:description" content="A short, checkable proof that no three-number coordinate system for 3D rotations can ever avoid a singularity, why compactness is the entire reason, where Euler angles and rotation vectors each hide theirs, the hairy ball theorem as a sibling fact, and why this is the exact same theorem that makes every map of the Earth distorted somewhere.">
+<meta property="og:url" content="https://ihebgafsi.tn/posts/why-gimbal-lock-cannot-be-fixed.html">
+<meta property="og:image" content="https://ihebgafsi.tn/images/thumbnails/why-gimbal-lock-cannot-be-fixed.svg">
+<meta property="og:site_name" content="Iheb Gafsi">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Why gimbal lock can never be fixed, and why that&#x27;s the same fact as a bad map of the world">
+<meta name="twitter:description" content="A short, checkable proof that no three-number coordinate system for 3D rotations can ever avoid a singularity, why compactness is the entire reason, where Euler angles and rotation vectors each hide theirs, the hairy ball theorem as a sibling fact, and why this is the exact same theorem that makes every map of the Earth distorted somewhere.">
+<meta name="twitter:image" content="https://ihebgafsi.tn/images/thumbnails/why-gimbal-lock-cannot-be-fixed.svg">
+<base href="../">
+<script>
     (function () { try { var t = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) { } })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Research · Iheb Gafsi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="alternate" type="application/rss+xml" title="Iheb Gafsi, blog feed" href="feed.xml">
   <link
     href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap"
     rel="stylesheet">
@@ -30,10 +44,10 @@
       <nav class="primary">
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a class="current" href="research.html">Research</a></li>
+          <li><a href="research.html">Research</a></li>
           <li><a href="publications.html">Publications</a></li>
           <li><a href="background.html">Background</a></li>
-          <li><a href="blog.html">Blog</a></li>
+          <li><a class="current" href="blog.html">Blog</a></li>
         </ul>
       </nav>
 
@@ -72,24 +86,26 @@
     </aside>
 
     <main>
-      <p class="eyebrow">research</p>
-      <h1 class="page-title">Research and projects</h1>
-      <p class="dim">Projects and open source code, in reverse chronological order.</p>
-
-      <div id="projects-list"></div>
-
-      <h2 class="section-title">Smaller reproductions</h2>
-      <ul class="plain-list" id="smaller-list"></ul>
-
-      <footer class="page-foot">code, where public, is linked from each repository's own readme</footer>
+      <p class="eyebrow"><a href="blog.html">blog</a></p>
+      <div id="post-hero" class="post-hero"></div>
+      <h1 class="page-title" id="post-title"></h1>
+      <p class="post-meta" id="post-date"></p>
+      <p class="post-meta" id="post-reading-time"></p>
+      <div id="post-toc" class="post-toc"></div>
+      <div id="post-body"></div>
+      <div id="post-prevnext"></div>
     </main>
 
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
   <script src="js/render.js?v=5"></script>
-  <script>renderProjects("projects-list", "smaller-list"); initThemeToggle();</script>
+  <script>
+    renderPost("post-title", "post-date", "post-body");
+    initThemeToggle();
+  </script>
 </body>
 
 </html>

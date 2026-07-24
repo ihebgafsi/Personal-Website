@@ -27,8 +27,10 @@ function showError(container, path) {
 /* ---------------------------------------------
    Theme toggle. A tiny inline script in each page's <head> already reads
    localStorage and sets data-theme="dark" on <html> before first paint,
-   so there is no flash of the wrong theme. This function only wires up
-   the visible button and keeps its label in sync.
+   so there is no flash of the wrong theme. This function wires up the
+   visible switch, keeps aria-pressed in sync, and re-syncs the
+   highlight.js stylesheet (the one thing that can't just react to a CSS
+   variable change) whenever the theme flips.
 --------------------------------------------- */
 
 function initThemeToggle(buttonId) {
@@ -36,10 +38,11 @@ function initThemeToggle(buttonId) {
   if (!btn) return;
   const root = document.documentElement;
 
-  function label() {
-    btn.textContent = root.getAttribute("data-theme") === "dark" ? "light mode" : "dark mode";
+  function sync() {
+    const isDark = root.getAttribute("data-theme") === "dark";
+    btn.setAttribute("aria-pressed", isDark ? "true" : "false");
   }
-  label();
+  sync();
 
   btn.addEventListener("click", function () {
     const isDark = root.getAttribute("data-theme") === "dark";
@@ -50,8 +53,42 @@ function initThemeToggle(buttonId) {
       root.setAttribute("data-theme", "dark");
       localStorage.setItem("theme", "dark");
     }
-    label();
+    sync();
+    syncHljsTheme();
   });
+}
+
+/* highlight.js bakes colors into inline styles at highlight time, it
+   can't react to a CSS variable flip on its own. Both light and dark
+   stylesheets are loaded once (see renderPost), and this just flips
+   which one is disabled, so a toggle mid-read updates code blocks
+   immediately instead of only on next reload. */
+function syncHljsTheme() {
+  const dark = document.documentElement.getAttribute("data-theme") === "dark";
+  const lightEl = document.getElementById("hljs-light");
+  const darkEl = document.getElementById("hljs-dark");
+  if (lightEl) lightEl.disabled = dark;
+  if (darkEl) darkEl.disabled = !dark;
+}
+
+/* ---------------------------------------------
+   Back to top. Fades in once the page has scrolled a bit, hidden and
+   inert otherwise so it's never in the way or reachable by keyboard nav
+   when invisible.
+--------------------------------------------- */
+
+function initBackToTop(buttonId) {
+  const btn = document.getElementById(buttonId || "backToTop");
+  if (!btn) return;
+
+  function sync() {
+    btn.classList.toggle("visible", window.scrollY > 480);
+  }
+  window.addEventListener("scroll", sync, { passive: true });
+  btn.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  sync();
 }
 
 /* ---------------------------------------------
@@ -76,6 +113,30 @@ function renderMathIn(el) {
   });
 }
 
+function initMermaid() {
+  // Read the page's own CSS variables so diagrams match whichever theme
+  // is active when this fires. Mermaid still bakes these into the SVG
+  // at render time, a diagram already on screen will not recolor itself
+  // if the user toggles theme afterward without a reload, that's a real
+  // limitation of how Mermaid renders, not something worth chasing here.
+  const css = getComputedStyle(document.documentElement);
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: "base",
+    themeVariables: {
+      fontFamily: "IBM Plex Mono, monospace",
+      fontSize: "14px",
+      primaryColor: css.getPropertyValue("--paper").trim(),
+      primaryTextColor: css.getPropertyValue("--ink").trim(),
+      primaryBorderColor: css.getPropertyValue("--graphite").trim(),
+      lineColor: css.getPropertyValue("--graphite").trim(),
+      secondaryColor: css.getPropertyValue("--rule").trim(),
+      tertiaryColor: css.getPropertyValue("--rule").trim()
+    },
+    flowchart: { curve: "basis", htmlLabels: true, padding: 16 }
+  });
+}
+
 function renderMermaidIn(el) {
   if (!window.mermaid || !el) return;
   const blocks = Array.prototype.slice.call(el.querySelectorAll("pre code.language-mermaid"));
@@ -96,6 +157,7 @@ function renderMermaidIn(el) {
 function renderPlotsIn(el) {
   if (!window.Plotly || !el) return;
   const blocks = Array.prototype.slice.call(el.querySelectorAll("pre code.language-plot"));
+  const css = getComputedStyle(document.documentElement);
   blocks.forEach(function (block) {
     const holder = document.createElement("div");
     holder.className = "plot-container";
@@ -103,11 +165,15 @@ function renderPlotsIn(el) {
       const spec = JSON.parse(block.textContent);
       block.parentElement.replaceWith(holder);
 
+      // transparent paper/plot background instead of hardcoded white,
+      // so a chart blends into either theme without a redraw on toggle
       const layout = Object.assign(
         {
           height: 420,
           margin: { t: 48, r: 24, b: 88, l: 56 },
-          font: { family: "IBM Plex Mono, monospace", size: 12 },
+          paper_bgcolor: "transparent",
+          plot_bgcolor: "transparent",
+          font: { family: "IBM Plex Mono, monospace", size: 12, color: css.getPropertyValue("--graphite").trim() },
           legend: { orientation: "h", x: 0, y: -0.22, xanchor: "left", font: { size: 11 } }
         },
         spec.layout || {}
@@ -128,11 +194,11 @@ function renderPlotsIn(el) {
 
 /* ---------------------------------------------
    Widgets: a ```widget fenced block containing raw HTML (with inline
-   <script> tags) for self-contained interactive demos, same idea as the
-   gimbal-lock and Neural ODE demos. innerHTML never executes <script>
-   tags it inserts, so after dropping the markup in, every <script>
-   inside it is torn out and rebuilt as a fresh element and reinserted,
-   which does execute. No CDN dependency, this always runs.
+   <script> tags) for self-contained interactive demos. innerHTML never
+   executes <script> tags it inserts, so after dropping the markup in,
+   every <script> inside it is torn out and rebuilt as a fresh element
+   and reinserted, which does execute. No CDN dependency, this always
+   runs.
 --------------------------------------------- */
 
 function renderWidgetsIn(el) {
@@ -209,6 +275,7 @@ const CDN = {
   mermaidJs: "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js",
   plotlyJs: "https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2/plotly.min.js",
   hljsCss: "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-light.min.css",
+  hljsCssDark: "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css",
   hljsJs: "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js"
 };
 
@@ -225,12 +292,13 @@ function loadScriptOnce(src) {
 
 function loadStylesheetOnce(href) {
   return new Promise(function (resolve) {
-    if (document.querySelector('link[href="' + href + '"]')) { resolve(); return; }
+    const existing = document.querySelector('link[href="' + href + '"]');
+    if (existing) { resolve(existing); return; }
     const l = document.createElement("link");
     l.rel = "stylesheet";
     l.href = href;
-    l.onload = function () { resolve(); };
-    l.onerror = function () { resolve(); };
+    l.onload = function () { resolve(l); };
+    l.onerror = function () { resolve(l); };
     document.head.appendChild(l);
   });
 }
@@ -244,24 +312,6 @@ function detectPostNeeds(body) {
     plot: fenceLangs.indexOf("plot") !== -1,
     highlight: fenceLangs.some(function (lang) { return lang && lang !== "mermaid" && lang !== "plot" && lang !== "widget"; })
   };
-}
-
-function initMermaid() {
-  mermaid.initialize({
-    startOnLoad: false,
-    theme: "base",
-    themeVariables: {
-      fontFamily: "IBM Plex Mono, monospace",
-      fontSize: "14px",
-      primaryColor: "#f7f7f3",
-      primaryTextColor: "#1c1c1a",
-      primaryBorderColor: "#5c5c56",
-      lineColor: "#5c5c56",
-      secondaryColor: "#efeee7",
-      tertiaryColor: "#efeee7"
-    },
-    flowchart: { curve: "basis", htmlLabels: true, padding: 16 }
-  });
 }
 
 function slugify(text, used) {
@@ -372,12 +422,21 @@ function renderPrevNextNav(navEl, posts, currentIndex) {
   const older = posts[currentIndex + 1];
   const newer = posts[currentIndex - 1];
   const olderLink = older
-    ? '<a class="post-nav-link post-nav-prev" href="post.html?slug=' + encodeURIComponent(older.slug) + '"><span class="post-nav-label">&larr; older</span>' + older.title + "</a>"
+    ? '<a class="post-nav-link post-nav-prev" href="' + slugHref(older.slug) + '"><span class="post-nav-label">&larr; older</span>' + older.title + "</a>"
     : "<span></span>";
   const newerLink = newer
-    ? '<a class="post-nav-link post-nav-next" href="post.html?slug=' + encodeURIComponent(newer.slug) + '"><span class="post-nav-label">newer &rarr;</span>' + newer.title + "</a>"
+    ? '<a class="post-nav-link post-nav-next" href="' + slugHref(newer.slug) + '"><span class="post-nav-label">newer &rarr;</span>' + newer.title + "</a>"
     : "<span></span>";
   navEl.innerHTML = '<div class="post-nav">' + olderLink + newerLink + "</div>";
+}
+
+/* Every post now has a static, shareable page at posts/<slug>.html
+   (generated by scripts/generate_post_pages.py, carries real per-post
+   OG/Twitter meta tags). Links from the blog list and prev/next nav
+   point there. post.html?slug=... still works as a fallback, both
+   resolve to the same renderPost() call. */
+function slugHref(slug) {
+  return "posts/" + encodeURIComponent(slug) + ".html";
 }
 
 /* ---------------------------------------------
@@ -578,8 +637,7 @@ function renderBlogList(containerId) {
         '<div class="post-item">' +
         thumb +
         '<div class="post-item-text">' +
-        '<p class="post-item-title"><a href="post.html?slug=' +
-        encodeURIComponent(post.slug) + '">' + post.title + "</a></p>" +
+        '<p class="post-item-title"><a href="' + slugHref(post.slug) + '">' + post.title + "</a></p>" +
         '<p class="pub-meta">' + post.date + " &middot; " + estimateReadingTime(post.body || post.summary || "") + "</p>" +
         '<p class="post-summary">' + post.summary + "</p>" +
         (tagPills ? '<div class="tag-row">' + tagPills + "</div>" : "") +
@@ -639,7 +697,11 @@ function renderPost(titleId, dateId, bodyId) {
   if (!bodyEl) return;
 
   const params = new URLSearchParams(window.location.search);
-  const slug = params.get("slug");
+  let slug = params.get("slug");
+  if (!slug) {
+    const metaSlug = document.querySelector('meta[name="post-slug"]');
+    if (metaSlug) slug = metaSlug.getAttribute("content");
+  }
 
   loadData("data/posts.json").then(function (data) {
     const posts = data.posts || [];
@@ -648,7 +710,7 @@ function renderPost(titleId, dateId, bodyId) {
 
     if (!post) {
       if (titleEl) titleEl.textContent = "Post not found";
-      bodyEl.innerHTML = '<p class="dim">There is no post at this address. <a href="blog.html">Back to the blog list</a>.</p>';
+      bodyEl.innerHTML = '<p class="dim">There is no post at this address. <a href="../blog.html">Back to the blog list</a>.</p>';
       return;
     }
 
@@ -685,7 +747,11 @@ function renderPost(titleId, dateId, bodyId) {
       loaders.push(loadScriptOnce(CDN.plotlyJs));
     }
     if (needs.highlight) {
-      loaders.push(Promise.all([loadStylesheetOnce(CDN.hljsCss), loadScriptOnce(CDN.hljsJs)]));
+      loaders.push(Promise.all([
+        loadStylesheetOnce(CDN.hljsCss).then(function (el) { if (el) el.id = "hljs-light"; }),
+        loadStylesheetOnce(CDN.hljsCssDark).then(function (el) { if (el) el.id = "hljs-dark"; }),
+        loadScriptOnce(CDN.hljsJs)
+      ]).then(function () { syncHljsTheme(); }));
     }
 
     Promise.all(loaders).catch(function (err) {

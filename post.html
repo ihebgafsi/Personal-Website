@@ -1,69 +1,97 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<script>
-(function(){try{var t=localStorage.getItem('theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();
-</script>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Blog · Iheb Gafsi</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="alternate" type="application/rss+xml" title="Iheb Gafsi, blog feed" href="feed.xml">
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="css/style.css?v=5">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <meta charset="utf-8">
+  <script>
+    (function () { try { var t = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) { } })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog · Iheb Gafsi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="alternate" type="application/rss+xml" title="Iheb Gafsi, blog feed" href="feed.xml">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 </head>
+
 <body>
-<div class="wrap">
+  <div class="wrap">
 
-  <aside class="sidebar">
-    <img class="avatar" src="images/profile.jpg" alt="Photo of Iheb Gafsi">
-    <p class="name">Iheb Gafsi</p>
-    <p class="role">student, Tunis</p>
+    <aside class="sidebar">
+      <img class="avatar" src="images/profile.jpg" alt="Photo of Iheb Gafsi">
+      <p class="name">Iheb Gafsi</p>
+      <p class="role">student, Tunis</p>
 
-    <nav class="primary">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="research.html">Research</a></li>
-        <li><a href="publications.html">Publications</a></li>
-        <li><a href="background.html">Background</a></li>
-        <li><a class="current" href="blog.html">Blog</a></li>
-      </ul>
-    </nav>
+      <nav class="primary">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="publications.html">Publications</a></li>
+          <li><a href="background.html">Background</a></li>
+          <li><a class="current" href="blog.html">Blog</a></li>
+        </ul>
+      </nav>
 
-    <div class="meta-block">
-      <dl>
-        <dt>location</dt><dd>Tunis, Tunisia</dd>
-        <dt>email</dt><dd><a href="mailto:iheb.gafsi@insat.ucar.tn">iheb.gafsi@insat.ucar.tn</a></dd>
-        <dt>github</dt><dd><a href="https://github.com/ihebgafsi">ihebgafsi</a></dd>
-        <dt>linkedin</dt><dd><a href="https://linkedin.com/in/ihebgafsi">ihebgafsi</a></dd>
-      </dl>
-    </div>
-    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">dark mode</button>
-  </aside>
+      <div class="meta-block">
+        <dl>
+          <dt>location</dt>
+          <dd>Tunis, Tunisia</dd>
+          <dt>email</dt>
+          <dd><a href="mailto:iheb.gafsi@insat.ucar.tn">iheb.gafsi@insat.ucar.tn</a></dd>
+          <dt>github</dt>
+          <dd><a href="https://github.com/ihebgafsi">ihebgafsi</a></dd>
+          <dt>linkedin</dt>
+          <dd><a href="https://linkedin.com/in/ihebgafsi">ihebgafsi</a></dd>
+        </dl>
+      </div>
+      <button type="button" id="themeToggle" class="theme-switch" aria-label="Toggle dark mode" aria-pressed="false">
+        <span class="theme-switch-track">
+          <span class="theme-switch-thumb">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.2" y1="4.2" x2="5.6" y2="5.6" />
+              <line x1="18.4" y1="18.4" x2="19.8" y2="19.8" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.2" y1="19.8" x2="5.6" y2="18.4" />
+              <line x1="18.4" y1="5.6" x2="19.8" y2="4.2" />
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+          </span>
+        </span>
+      </button>
+    </aside>
 
-  <main>
-    <p class="eyebrow"><a href="blog.html">blog</a></p>
-    <div id="post-hero" class="post-hero"></div>
-    <h1 class="page-title" id="post-title"></h1>
-    <p class="post-meta" id="post-date"></p>
-    <p class="post-meta" id="post-reading-time"></p>
-    <div id="post-toc" class="post-toc"></div>
-    <div id="post-body"></div>
-    <div id="post-prevnext"></div>
-  </main>
+    <main>
+      <p class="eyebrow"><a href="blog.html">blog</a></p>
+      <div id="post-hero" class="post-hero"></div>
+      <h1 class="page-title" id="post-title"></h1>
+      <p class="post-meta" id="post-date"></p>
+      <p class="post-meta" id="post-reading-time"></p>
+      <div id="post-toc" class="post-toc"></div>
+      <div id="post-body"></div>
+      <div id="post-prevnext"></div>
+    </main>
 
-</div>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="js/render.js?v=5"></script>
-<script>
-  renderPost("post-title", "post-date", "post-body");
-  initThemeToggle();
-</script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="js/render.js?v=5"></script>
+  <script>
+    renderPost("post-title", "post-date", "post-body");
+    initThemeToggle();
+  </script>
 </body>
+
 </html>

@@ -1,65 +1,99 @@
 <!doctype html>
 <html lang="en">
-<script data-goatcounter="https://ihebgafsi.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+<script data-goatcounter="https://ihebgafsi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 <head>
-<meta charset="utf-8">
-<script>
-(function(){try{var t=localStorage.getItem('theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();
-</script>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iheb Gafsi</title>
-<meta name="description" content="Iheb Gafsi, notes on research and background.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="alternate" type="application/rss+xml" title="Iheb Gafsi, blog feed" href="feed.xml">
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=5">
-<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <meta charset="utf-8">
+  <script>
+    (function () { try { var t = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) { } })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iheb Gafsi</title>
+  <meta name="description" content="Iheb Gafsi, notes on research and background.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="alternate" type="application/rss+xml" title="Iheb Gafsi, blog feed" href="feed.xml">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 </head>
+
 <body>
-<div class="wrap">
+  <div class="wrap">
 
-  <aside class="sidebar">
-    <img class="avatar" src="images/profile.jpg" alt="Photo of Iheb Gafsi">
-    <p class="name">Iheb Gafsi</p>
-    <p class="role">student, Tunis</p>
+    <aside class="sidebar">
+      <img class="avatar" src="images/profile.jpg" alt="Photo of Iheb Gafsi">
+      <p class="name">Iheb Gafsi</p>
+      <p class="role">student, Tunis</p>
 
-    <nav class="primary">
-      <ul>
-        <li><a class="current" href="index.html">Home</a></li>
-        <li><a href="research.html">Research</a></li>
-        <li><a href="publications.html">Publications</a></li>
-        <li><a href="background.html">Background</a></li>
-        <li><a href="blog.html">Blog</a></li>
-      </ul>
-    </nav>
+      <nav class="primary">
+        <ul>
+          <li><a class="current" href="index.html">Home</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="publications.html">Publications</a></li>
+          <li><a href="background.html">Background</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </nav>
 
-    <div class="meta-block">
-      <dl>
-        <dt>location</dt><dd>Tunis, Tunisia</dd>
-        <dt>email</dt><dd><a href="mailto:iheb.gafsi@insat.ucar.tn">iheb.gafsi@insat.ucar.tn</a></dd>
-        <dt>github</dt><dd><a href="https://github.com/ihebgafsi">ihebgafsi</a></dd>
-        <dt>linkedin</dt><dd><a href="https://linkedin.com/in/ihebgafsi">ihebgafsi</a></dd>
-      </dl>
-    </div>
-    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">dark mode</button>
-  </aside>
+      <div class="meta-block">
+        <dl>
+          <dt>location</dt>
+          <dd>Tunis, Tunisia</dd>
+          <dt>email</dt>
+          <dd><a href="mailto:iheb.gafsi@insat.ucar.tn">iheb.gafsi@insat.ucar.tn</a></dd>
+          <dt>github</dt>
+          <dd><a href="https://github.com/ihebgafsi">ihebgafsi</a></dd>
+          <dt>linkedin</dt>
+          <dd><a href="https://linkedin.com/in/ihebgafsi">ihebgafsi</a></dd>
+        </dl>
+      </div>
+      <button type="button" id="themeToggle" class="theme-switch" aria-label="Toggle dark mode" aria-pressed="false">
+        <span class="theme-switch-track">
+          <span class="theme-switch-thumb">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.2" y1="4.2" x2="5.6" y2="5.6" />
+              <line x1="18.4" y1="18.4" x2="19.8" y2="19.8" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.2" y1="19.8" x2="5.6" y2="18.4" />
+              <line x1="18.4" y1="5.6" x2="19.8" y2="4.2" />
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+          </span>
+        </span>
+      </button>
+    </aside>
 
-  <main>
-    <p class="eyebrow">home</p>
-    <h1 class="page-title">Iheb Gafsi</h1>
+    <main>
+      <p class="eyebrow">home</p>
+      <h1 class="page-title">Iheb Gafsi</h1>
 
-    <p class="lede">I am a student in Tunis, working mostly on problems in machine learning where structure and geometry matter more than scale. I read, run small experiments, and rewrite code that did not work the first time.</p>
+      <p class="lede">I am a student in Tunis, working mostly on problems in machine learning where structure and
+        geometry matter more than scale. I read, run small experiments, and rewrite code that did not work the first
+        time.</p>
 
-    <p>My current interest is in how models represent things that are not naturally flat, orientations, shapes, graphs, and what goes wrong when we force that structure into ordinary vectors. Most of what I do is applied. I try an idea, check whether it holds up under a proper baseline, and move on if it does not.</p>
+      <p>My current interest is in how models represent things that are not naturally flat, orientations, shapes,
+        graphs, and what goes wrong when we force that structure into ordinary vectors. Most of what I do is applied. I
+        try an idea, check whether it holds up under a proper baseline, and move on if it does not.</p>
 
-    <p>I studied signal processing and applied mathematics at INSAT in Tunis, and have spent time as a research intern in a few small labs and startups since. A short account of that is on the <a href="background.html">background</a> page. Some of the projects and preprints that came out of it are under <a href="research.html">research</a> and <a href="publications.html">publications</a>.</p>
+      <p>I studied signal processing and applied mathematics at INSAT in Tunis, and have spent time as a research intern
+        in a few small labs and startups since. A short account of that is on the <a
+          href="background.html">background</a> page. Some of the projects and preprints that came out of it are under
+        <a href="research.html">research</a> and <a href="publications.html">publications</a>.</p>
 
-    <footer class="page-foot">last updated 2026.07</footer>
-  </main>
+      <footer class="page-foot">last updated 2026.07</footer>
+    </main>
 
-</div>
-<script src="js/render.js?v=6"></script>
-<script>initThemeToggle();</script>
+  </div>
+  <script src="js/render.js?v=6"></script>
+  <script>initThemeToggle();</script>
 </body>
+
 </html>
